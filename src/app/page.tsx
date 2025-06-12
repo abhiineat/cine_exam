@@ -60,7 +60,6 @@ export default function LoginPage() {
     }, 1000);
   };
 
-
   useEffect(() => {
     generateCredentials();
   }, []);

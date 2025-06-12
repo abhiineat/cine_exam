@@ -71,7 +71,7 @@ export default function LoginPage() {
         {/* Login Form */}
         <div className="p-8 border-r border-neutral-700">
           <div className="flex flex-col items-center mb-6">
-            <Image src="/csi-logo.webp" alt="CSI Logo" width={80} height={80} />
+            <Image src="/csi-logo.webp" alt="CSI Logo" width={120} height={120} />
             <h1 className="text-2xl font-semibold text-white mt-4">
               CINE&apos;24{" "}
               <span className="text-base italic font-medium text-neutral-400">

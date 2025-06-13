@@ -29,7 +29,7 @@ export default function SelectLanguageDropdown({
   return (
     <div className="relative w-4/5">
       <select
-        className="w-full p-3 pr-10 rounded-xl bg-[#EAEEFF] text-sm font-medium appearance-none cursor-pointer focus:outline-none"
+        className="w-full p-3 pr-10 rounded-full border-[1px] border-gray-400 text-sm font-medium appearance-none cursor-pointer focus:outline-none"
         onClick={() => setOpen(!open)}
         onChange={handleChange}
         value={selectedLanguage}

@@ -36,10 +36,10 @@ export default function StartButton({ selectedLanguage }: StartButtonProps) {
 
   return (
     <div className="space-y-6">
-      <label className="flex items-start text-base font-semibold text-gray-800">
+      <label className="flex items-start text-base font-semibold text-gray-600">
         <input
           type="checkbox"
-          className="mt-1 w-5 h-5 rounded text-blue-600  focus:ring-blue-500"
+          className="mt-1 w-5 h-5 rounded text-blue-600/10"
           onChange={(e) => setIsChecked(e.target.checked)}
         />
         <span className="pl-3">
@@ -47,9 +47,9 @@ export default function StartButton({ selectedLanguage }: StartButtonProps) {
         </span>
       </label>
 
-      <div className="flex flex-col md:flex-row items-center gap-4">
+      <div className="flex flex-col md:flex-row items-center gap-4 text-gray-800">
         <input
-          className="w-full md:w-1/3 p-3 rounded-full border-2 border-gray-500 bg-transparent text-center placeholder-gray-500 focus:outline-none"
+          className="w-full md:w-1/3 p-3 rounded-full border-[2px] border-gray-400 bg-transparent text-center placeholder-gray-500 focus:outline-none"
           type="text"
           value={start}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -63,7 +63,7 @@ export default function StartButton({ selectedLanguage }: StartButtonProps) {
           className={`w-full md:w-1/4 p-3 rounded-full text-lg font-medium transition-all duration-200 ${
             isButtonEnabled && !loading
               ? "bg-[#546CFF] text-white hover:bg-[#3f56d6] cursor-pointer"
-              : "bg-gray-300 text-gray-600 cursor-not-allowed"
+              : "bg-gray-500/10 text-gray-500 cursor-not-allowed"
           }`}
         >
           {loading ? "Starting..." : "Start"}

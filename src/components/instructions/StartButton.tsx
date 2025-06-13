@@ -47,7 +47,7 @@ export default function StartButton({ selectedLanguage }: StartButtonProps) {
         </span>
       </label>
 
-      <div className="flex flex-col md:flex-row items-center gap-4 text-gray-800">
+      <div className="flex flex-col md:flex-row text-sm md:text-base items-center gap-4 text-gray-800">
         <input
           className="w-full md:w-1/3 p-3 rounded-full border-[2px] border-gray-400 bg-transparent text-center placeholder-gray-500 focus:outline-none"
           type="text"

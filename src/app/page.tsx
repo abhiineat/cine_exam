@@ -28,7 +28,7 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validate()) {
-      router.push("/dashboard");
+      router.push("/e/instructions");
     }
   };
 

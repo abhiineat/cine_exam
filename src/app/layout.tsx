@@ -9,7 +9,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "CINE 2024 Exam Portal",
+  title: "CINE 2024",
   description: "CINE 2024 Exam Portal by CSI",
 };
 

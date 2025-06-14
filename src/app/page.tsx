@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import BackgroundGridPattern from "@/components/ui/BackgroundGridPattern";
 
 export default function LoginPage() {
   const [studentNumber, setStudentNumber] = useState("");
@@ -66,8 +67,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-900 px-4 py-10">
-      <div className="border border-neutral-700 bg-neutral-800 rounded-3xl max-w-4xl w-full grid grid-cols-1 md:grid-cols-2">
-        {/* Login Form */}
+      <BackgroundGridPattern />
+      <div className="backdrop-blur-[5px] border border-neutral-700/50 bg-neutral-800/50 rounded-3xl max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 z-10">
+        
         <div className="p-8 border-r border-neutral-700">
           <div className="flex flex-col items-center mb-6">
             <Image src="/csi-logo.webp" alt="CSI Logo" width={120} height={120} />
@@ -80,7 +82,7 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Student Number */}
+            
             <div className="relative">
               <input
                 type="text"

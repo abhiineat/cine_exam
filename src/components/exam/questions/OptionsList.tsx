@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const dummyOptions = [
   "Option A",
@@ -15,12 +15,11 @@ export default function OptionsList() {
   const [lockedOption, setLockedOption] = useState<string | null>(null);
 
   const handleSelect = (option: string) => {
-    if (saving) return; // prevent rapid clicks
+    if (saving) return;
     setSelected(option);
     setSaving(true);
     setLockedOption(option);
 
-    // Simulate API call
     setTimeout(() => {
       setSaving(false);
       setLockedOption(null);
@@ -29,7 +28,7 @@ export default function OptionsList() {
   };
 
   return (
-    <div className="flex-1 mt-4 overflow-y-auto space-y-4 relative p-4 h-[30%]">
+    <div className="h-full overflow-y-auto space-y-4 relative p-4">
       {dummyOptions.map((option, idx) => (
         <label
           key={idx}
@@ -67,3 +66,4 @@ export default function OptionsList() {
     </div>
   );
 }
+

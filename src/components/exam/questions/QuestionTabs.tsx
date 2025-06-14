@@ -6,9 +6,9 @@ export default function QuestionTabs() {
   const [active, setActive] = useState("Description");
 
   return (
-    <div className="relative h-12 text-lg  flex items-center rounded-full bg-neutral-800/50 border border-white/10 backdrop-blur-md shadow-inner overflow-hidden">
+    <div className="relative h-12 text-lg flex items-center rounded-md bg-neutral-800/50 border border-white/10 backdrop-blur-md shadow-inner overflow-hidden">
       <div
-        className="absolute my-auto top-0 bottom-0 rounded-full bg-white/10 backdrop-blur-xl transition-transform duration-300 ease-in-out will-change-transform"
+        className="absolute my-auto top-0 bottom-0 rounded-md bg-white/10 backdrop-blur-xl transition-transform duration-300 ease-in-out will-change-transform"
         style={{
           width: `${100 / tabs.length}%`,
           transform: `translateX(${tabs.indexOf(active) * 100}%)`,

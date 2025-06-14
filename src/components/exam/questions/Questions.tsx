@@ -5,24 +5,28 @@ import OptionsList from "@/components/exam/questions/OptionsList";
 export default function Questions() {
   return (
     <section
-      className="w-[65%] md:w-[75%] flex-1 p-2 rounded-3xl 
+      className="w-full md:w-[85%] lg:w-[80%] max-h-[70vh] p-2 rounded-lg
         bg-white/5 backdrop-blur-[6px] border border-white/10
-        shadow-inner shadow-black/20 h-[100%] flex gap-2"
+        shadow-inner shadow-black/20 flex flex-col md:flex-row gap-4"
     >
-      <div className="flex flex-col w-1/2 gap-4">
-        {/* Top: Question Content */}
-        <div className="flex-1 overflow-y-auto">
-          {/* Rendered content like description, code block, or image will go here */}
+      {/* Left Column */}
+      <div className="flex flex-col w-full md:w-1/2 gap-4 flex-1">
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto p-4 rounded-2xl border border-white/10 bg-white/5">
+            {/* Question content goes here */}
+          </div>
         </div>
-
         <QuestionTabs />
       </div>
 
-      {/* Separator Line */}
-      <div className="w-[1px] bg-white/30 rounded-full" />
+      {/* Separator */}
+      <div className="hidden md:block w-[1px] bg-white/30 rounded-full" />
 
-      <div className="flex flex-col w-1/2 gap-4 h-[100%]">
-        <OptionsList />
+      {/* Right Column */}
+      <div className="flex flex-col w-full md:w-1/2 gap-4 flex-1">
+        <div className="flex-1 overflow-hidden">
+          <OptionsList />
+        </div>
         <ActionButtons />
       </div>
     </section>

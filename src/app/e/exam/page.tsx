@@ -1,44 +1,19 @@
-import Image from "next/image";
 import BackgroundGridPattern from "@/components/ui/BackgroundGridPattern";
 import Header from "@/components/exam/Header";
 import Navbar from "@/components/exam/Navbar";
+import QuestionNavigator from "@/components/exam/QuestionNavigator";
+import Questions from "@/components/exam/questions/Questions";
 
 export default function ExamPage() {
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-white p-4 overflow-hidden">
+    <div className="relative h-[100vh] bg-[#0a0a0a] text-white p-4">
       <BackgroundGridPattern />
       <Header />
       <Navbar />
 
-      {/* Main content area: Question + Navigator side by side */}
-      <div className="w-[95%] mx-auto mt-6 flex gap-6">
-        {/* Question Section */}
-        <section
-          className="flex-1 p-6 rounded-3xl 
-          bg-white/5 backdrop-blur-[6px] border border-white/10
-          shadow-inner shadow-black/20 min-h-[400px]"
-        >
-          {/* Placeholder for actual question content */}
-        </section>
-
-        {/* Question Navigator */}
-        <section
-          className="w-[260px] shrink-0 p-4 rounded-2xl
-          bg-white/5 backdrop-blur-[6px] border border-white/10
-          shadow-inner shadow-black/20 overflow-auto"
-        >
-          <div className="grid grid-cols-3 gap-3">
-            {Array.from({ length: 20 }, (_, i) => (
-              <button
-                key={i + 1}
-                className="w-14 h-14 rounded-full text-lg font-medium text-gray-300 hover:scale-105 
-                backdrop-blur-xl transition-all"
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-        </section>
+      <div className="w-[98%] h-[77%] mx-auto mt-6 flex gap-6">
+        <Questions />
+        <QuestionNavigator />
       </div>
     </div>
   );

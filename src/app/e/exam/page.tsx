@@ -1,7 +1,7 @@
 import BackgroundGridPattern from "@/components/ui/BackgroundGridPattern";
 import Header from "@/components/exam/Header";
 import Navbar from "@/components/exam/Navbar";
-import QuestionNavigator from "@/components/exam/QuestionNavigator";
+import QuestionNavigator from "@/components/exam/questions/QuestionNavigator";
 import Questions from "@/components/exam/questions/Questions";
 
 export default function ExamPage() {

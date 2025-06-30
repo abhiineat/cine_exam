@@ -9,6 +9,7 @@ import Questions from "@/components/exam/questions/Questions";
 
 export default function ExamPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeQuestion, setActiveQuestion] = useState(1);
 
   return (
     <div className="relative h-screen bg-[#0a0a0a] text-white p-4 overflow-y-auto">
@@ -16,24 +17,14 @@ export default function ExamPage() {
 
       <div className="h-full overflow-y-auto">
         <Header />
-        <Navbar />
+        <Navbar onOpenQuestions={() => setDrawerOpen(true)} />
 
-        <div className="w-full mx-auto mt-6 flex flex-col lg:flex-row gap-6">
-          <Questions />
-          <QuestionNavigator open={drawerOpen} setOpen={setDrawerOpen} />
-        </div>
-      </div>
-
-      {/* Floating drawer toggle button (mobile only) */}
-      <div className="fixed bottom-4 right-4 z-50 md:hidden">
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="w-12 h-12 rounded-full bg-white/10 border border-white/10 text-white
-          flex items-center justify-center shadow-md hover:bg-white/20 transition-all"
-          aria-label="Open question navigator"
-        >
-          🧭
-        </button>
+        <QuestionNavigator
+          open={drawerOpen}
+          setOpen={setDrawerOpen}
+          activeQuestion={activeQuestion}
+          onQuestionClick={(i) => setActiveQuestion(i)}
+        />
       </div>
     </div>
   );

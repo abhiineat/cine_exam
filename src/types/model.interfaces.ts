@@ -8,31 +8,42 @@ export interface IResponse extends Document {
 }
 
 export interface IFeedbackQuestion extends Document {
-  examId: mongoose.Schema.Types.ObjectId;
   question: string;
   type: 'text' | 'rating';
-  answer: string | number; // Mixed type to allow both text and rating answers
+  answer: string | number;
 }
 
-export interface ISubject {
-  name: string;
-  optional?: boolean;
+export interface IFeedback extends Document {
+    candidateId: mongoose.Schema.Types.ObjectId;
+    feedbacks: [{
+        question: string;
+        type: 'text' | 'rating';
+        answer: string | number; 
+    }]
 }
 
-export interface ISubjectGroup {
-  groupName?: string;
-  isChoiceGroup: boolean;
-  maxChoices?: number; 
-  subjects: ISubject[];
+export interface IOption {
+  id: number;
+  desc: string;
 }
 
-export interface IExam extends mongoose.Document {
-  title: string;
-  description: string;
-  duration: number;
-  subjectGroups: ISubjectGroup[];
-  createdBy: mongoose.Schema.Types.ObjectId;
-  isActive: boolean;
-  startTime?: Date;
-  endTime?: Date;
+export interface IQuestion extends mongoose.Document {
+    subject: string;
+    question: string;
+    code?: string;
+    image?: string;
+    options: IOption[];
+    correctAnswer: number;
+}
+
+export interface ICandidate extends mongoose.Document {
+    name: string;
+    studentNumber: string;
+    branch: string;
+    gender: string;
+    email: string;
+    residence: string;
+    phone: string;
+    password: string;
+    isVerified: boolean;
 }

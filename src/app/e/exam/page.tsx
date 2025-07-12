@@ -25,6 +25,8 @@ export default function ExamPage() {
           activeQuestion={activeQuestion}
           onQuestionClick={(i) => setActiveQuestion(i)}
         />
+
+        <Questions />
       </div>
     </div>
   );

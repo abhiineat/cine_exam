@@ -1,7 +1,7 @@
 export default function ActionButtons() {
   return (
     <div className="flex flex-wrap sm:flex-nowrap justify-around items-center gap-4 mt-4">
-      {["Clear", "Mark as Read", "Next"].map((label) => {
+      {["Clear", "Mark for Review", "Next"].map((label) => {
         let baseStyle =
           "px-4 sm:px-5 py-2 w-full sm:w-40 text-sm font-semibold rounded-full border transition-all text-center";
 
@@ -11,7 +11,7 @@ export default function ActionButtons() {
             colorStyle =
               "bg-neutral-700/40 border-neutral-500 text-white hover:bg-neutral-600/50";
             break;
-          case "Mark as Read":
+          case "Mark for Review":
             colorStyle =
               "bg-purple-700/40 border-purple-500 text-purple-200 hover:bg-purple-600/40";
             break;

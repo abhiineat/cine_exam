@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BackgroundGridPattern from "@/components/ui/BackgroundGridPattern";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [studentNumber, setStudentNumber] = useState("");
@@ -12,7 +13,7 @@ export default function LoginPage() {
   const [generatedCredentials, setGeneratedCredentials] = useState<{
     studentNumber: string;
     password: string;
-  } | null>(null);
+  } | null>({ studentNumber: "*%@*#&#$", password: "*%@*#&#$" });
   const [isGenerating, setIsGenerating] = useState(false);
 
 
@@ -26,44 +27,69 @@ export default function LoginPage() {
     return !newErrors.studentNumber && !newErrors.password;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (validate()) {
-      router.push("/e/instructions");
-    }
-  };
-
-
-  const scrambleText = () =>
-    Math.random().toString(36).substring(2, 10).toUpperCase();
-
-  const generateCredentials = () => {
+  const generateCredentials = async () => {
     if (isGenerating) return;
 
     setIsGenerating(true);
+
     let scrambleInterval = setInterval(() => {
       setGeneratedCredentials({
         studentNumber: `23CS${Math.floor(Math.random() * 9000 + 1000)}`,
-        password: scrambleText(),
+        password: Math.random().toString(36).slice(-8).toUpperCase(),
       });
     }, 50);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/candidate/mock", {
+        method: "POST",
+      });
+
       clearInterval(scrambleInterval);
-      const newCreds = {
-        studentNumber: `23CS${Math.floor(Math.random() * 9000 + 1000)}`,
-        password: Math.random().toString(36).slice(-8),
-      };
-      setGeneratedCredentials(newCreds);
-      setStudentNumber(newCreds.studentNumber);
-      setPassword(newCreds.password);
+
+      if (!res.ok) throw new Error("Failed to fetch");
+
+      const data = await res.json();
+
+      if (data.success && data.candidate) {
+        const newCreds = {
+          studentNumber: data.candidate.studentNumber,
+          password: data.candidate.password,
+        };
+        setGeneratedCredentials(newCreds);
+        setStudentNumber(newCreds.studentNumber);
+        setPassword(newCreds.password);
+      } else {
+        console.error("Error in response:", data);
+      }
+    } catch (err) {
+      console.error("Error generating credentials:", err);
+    } finally {
+      clearInterval(scrambleInterval);
       setIsGenerating(false);
-    }, 1000);
+    }
   };
 
-  useEffect(() => {
-    generateCredentials();
-  }, []);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      studentNumber,
+      password,
+    });
+
+    if (res?.ok) {
+      router.push("/e/instructions");
+    } else {
+      setErrors({
+        ...errors,
+        password: "Invalid credentials. Try again or regenerate.",
+      });
+    }
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-900 px-4 py-10">
@@ -143,7 +169,6 @@ export default function LoginPage() {
           </form>
         </div>
 
-        {/* Credentials Display */}
         <div className="p-8 border-l border-neutral-700 text-white">
           <h2 className="text-xl font-semibold mb-6">🔐 Mock Credentials</h2>
 

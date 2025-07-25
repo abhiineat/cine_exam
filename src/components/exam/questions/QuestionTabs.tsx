@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 export default function QuestionTabs() {
-  const tabs = ["Description", "Code", "Image"];
+  const tabs = ["Description", "Code"];
   const [active, setActive] = useState("Description");
 
   return (

@@ -51,6 +51,7 @@ export default function SelectLanguageDropdown({
           alt="Dropdown arrow"
           width={14}
           height={14}
+          className="w-4"
         />
       </div>
     </div>

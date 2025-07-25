@@ -33,7 +33,7 @@ export interface IQuestion extends mongoose.Document {
     code?: string;
     image?: string;
     options: IOption[];
-    correctAnswer: number;
+    answer: number;
 }
 
 export interface ICandidate extends mongoose.Document {

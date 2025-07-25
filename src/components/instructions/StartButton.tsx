@@ -1,6 +1,7 @@
 "use client";
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface StartButtonProps {
   selectedLanguage: string;
@@ -10,25 +11,32 @@ export default function StartButton({ selectedLanguage }: StartButtonProps) {
   const [start, setStart] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
-
-
+  const { update } = useSession(); 
   const router = useRouter();
 
-
   const handleStart = async () => {
-    router.push("/e/exam")
-    // Uncomment and integrate API call logic
-    // setLoading(true);
-    // try {
-    //   const response = await setPreferenceService(userId, selectedLanguage);
-    //   if (response === "Error fetching the response") throw new Error();
-    //   localStorage.setItem("language", languageValue(parseInt(selectedLanguage)));
-    //   router.push("/start");
-    // } catch {
-    //   toast.error("Error occurred! Refresh the page and try again.");
-    // } finally {
-    //   setLoading(false);
-    // }
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/set-preference", {
+        method: "POST",
+        body: JSON.stringify({ preference: Number(selectedLanguage) }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error("Failed to update preference");
+
+
+
+      await update();
+
+      router.push("/e/exam");
+    } catch (error) {
+      console.error("Error setting preference:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isButtonEnabled =

@@ -51,7 +51,12 @@ const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.email = user.email;
         token.isPreferenceSet = user.isPreferenceSet;
-        token.isExamCompleted = user.isExamCompleted || false;
+        token.isExamCompleted = user.isExamCompleted;
+      } else {
+        await connectToDB();
+        const activity = await Activity.findOne({ candidateId: token.id });
+        token.isPreferenceSet = activity?.isPreferenceSet || false;
+        token.isExamCompleted = activity?.isExamCompleted || false;
       }
       return token;
     },

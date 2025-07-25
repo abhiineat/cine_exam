@@ -31,7 +31,6 @@ export interface IQuestion extends mongoose.Document {
     subject: string;
     question: string;
     code?: string;
-    image?: string;
     options: IOption[];
     answer: number;
 }

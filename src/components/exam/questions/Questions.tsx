@@ -2,7 +2,7 @@ import QuestionTabs from "@/components/exam/questions/QuestionTabs";
 import ActionButtons from "@/components/exam/questions/ActionButtons";
 import OptionsList from "@/components/exam/questions/OptionsList";
 
-export default function Questions() {
+export default function Questions({ loading }: { loading: boolean }) {
   return (
     <section
       className="w-full md:w-[85%] lg:w-[80%] max-h-[70vh] p-2 rounded-lg

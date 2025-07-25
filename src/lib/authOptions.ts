@@ -31,11 +31,14 @@ const authOptions: NextAuthOptions = {
         );
         if (!isPasswordCorrect) return null;
 
+        const activity = await Activity.findOne({ candidateId: user._id });
 
         return {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
+          isPreferenceSet: activity?.isPreferenceSet || false,
+          isExamCompleted: activity?.isExamCompleted || false,
         };
       },
     }),
@@ -47,14 +50,18 @@ const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.isPreferenceSet = user.isPreferenceSet;
+        token.isExamCompleted = user.isExamCompleted || false;
       }
       return token;
     },
-    async session({ session, token } : { session: Session; token: JWT }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.name = token.name as string;
         session.user.email = token.email as string;
+        session.user.isPreferenceSet = token.isPreferenceSet as boolean;
+        session.user.isExamCompleted = token.isExamCompleted as boolean;
       }
       return session;
     },

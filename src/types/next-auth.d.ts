@@ -9,6 +9,8 @@ declare module "next-auth" {
       id: string;
       name: string;
       email: string;
+      isPreferenceSet: boolean;
+      isExamCompleted: boolean;
     } & DefaultSession["user"];
   }
 
@@ -16,6 +18,8 @@ declare module "next-auth" {
     id: string;
     name: string;
     email: string;
+    isPreferenceSet: boolean;
+    isExamCompleted: boolean;
   }
 }
 
@@ -24,5 +28,7 @@ declare module "next-auth/jwt" {
     id: string;
     name: string;
     email: string;
+    isPreferenceSet: boolean;
+    isExamCompleted: boolean;
   }
 }

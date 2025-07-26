@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Activity from "@/models/activity.model";
 import { connectToDB } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import authOptions from "@/lib/authOptions";
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
     const session = await getServerSession(authOptions);
     const candidateId = session?.user?.id;

@@ -14,33 +14,35 @@ const COLORS = {
   notVisited: "#e2e8f0",
 };
 
-const getStatusCounts = (questionsBySubject: Record<string, any[]>) => {
-  let answered = 0,
-    marked = 0,
-    visited = 0,
-    notVisited = 0;
+type Question = {
+    _id?: string;
+    status?: number;
+    ansId?: number;
+};
 
-  Object.values(questionsBySubject).forEach((qs) => {
-    qs.forEach((q) => {
-      const status = q.status;
-      const ansId = q.ansId;
-      console.log("Status:", status, "Answer ID:", ansId);
-      console.log(typeof ansId, "type", "type of ", typeof visited);
-      if (status === 2) {
-        marked++;
-      } else if (status === 1) {
-        answered++;
-      } else if (status === 0 && ansId === -1) {
-        visited++;
-        console.log("Visited question:", q._id);
-        console.log("Answer ID:", ansId, visited);
-      } else {
-        notVisited++;
-      }
+const getStatusCounts = (questionsBySubject: Record<string, Question[]>) => {
+    let answered = 0,
+        marked = 0,
+        visited = 0,
+        notVisited = 0;
+
+    Object.values(questionsBySubject).forEach((qs) => {
+        qs.forEach((q) => {
+            const status = q.status;
+            const ansId = q.ansId;
+            if (status === 2) {
+                marked++;
+            } else if (status === 1) {
+                answered++;
+            } else if (status === 0 && ansId === -1) {
+                visited++;
+            } else {
+                notVisited++;
+            }
+        });
     });
-  });
 
-  return { answered, marked, visited, notVisited };
+    return { answered, marked, visited, notVisited };
 };
 
 export default function Submit() {

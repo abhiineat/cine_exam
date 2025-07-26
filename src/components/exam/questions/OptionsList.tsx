@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useExamStore } from "@/stores/examstore"; 
 
 interface Option {
   id: number;
@@ -9,24 +10,68 @@ interface Option {
 
 interface OptionsListProps {
   options: Option[];
+  quesId: string;
+  status?: number;
+  ansId?: number;
 }
 
-export default function OptionsList({ options }: OptionsListProps) {
-  const [selected, setSelected] = useState<number | null>(null);
+export default function OptionsList({
+  options,
+  quesId,
+  status,
+  ansId,
+}: OptionsListProps) {
+  const [selected, setSelected] = useState<number | null>(ansId ?? null);
   const [saving, setSaving] = useState(false);
   const [lockedOption, setLockedOption] = useState<number | null>(null);
 
-  const handleSelect = (optionId: number) => {
-    if (saving) return;
+  const { questions, setQuestions, selectedSubject } = useExamStore();
+
+  useEffect(() => {
+    setSelected(ansId ?? null);
+  }, [ansId]);
+
+  const handleSelect = async (optionId: number) => {
+    if (saving || selected === optionId) return;
+
     setSelected(optionId);
     setSaving(true);
     setLockedOption(optionId);
 
-    setTimeout(() => {
+    const newStatus = status === 2 ? 2 : 1;
+
+    try {
+      await fetch("/api/response", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          quesId,
+          ansId: optionId,
+          status: newStatus,
+        }),
+      });
+
+      const updatedQuestions = { ...questions };
+      const subjectQuestions = [...(updatedQuestions[selectedSubject] || [])];
+      const index = subjectQuestions.findIndex((q) => q._id === quesId);
+
+      if (index !== -1) {
+        subjectQuestions[index] = {
+          ...subjectQuestions[index],
+          ansId: optionId,
+          status: newStatus,
+        };
+        updatedQuestions[selectedSubject] = subjectQuestions;
+        setQuestions(updatedQuestions);
+      }
+    } catch (error) {
+      console.error("Failed to save answer:", error);
+    } finally {
       setSaving(false);
       setLockedOption(null);
-      console.log(`Saved answer: ${optionId}`);
-    }, 2000);
+    }
   };
 
   return (
@@ -49,7 +94,7 @@ export default function OptionsList({ options }: OptionsListProps) {
         >
           <input
             type="radio"
-            name="option"
+            name={`option-${quesId}`}
             value={option.id}
             className="hidden"
             checked={selected === option.id}

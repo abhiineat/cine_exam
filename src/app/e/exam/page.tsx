@@ -6,55 +6,8 @@ import Header from "@/components/exam/Header";
 import Navbar from "@/components/exam/Navbar";
 import QuestionNavigator from "@/components/exam/questions/QuestionNavigator";
 import Questions from "@/components/exam/questions/Questions";
-import { useExamStore } from "@/stores/examstore";
 import QuestionsSkeleton from "@/components/exam/questions/QuestionsSkeleton";
-
-// export default function ExamPage() {
-//   const [drawerOpen, setDrawerOpen] = useState(false);
-//   const [loading, setLoading] = useState(true);
-
-//   const setQuestions = useExamStore((s) => s.setQuestions);
-//   const setSelectedSubject = useExamStore((s) => s.setSelectedSubject);
-//   const setActiveQuestion = useExamStore((s) => s.setActiveQuestion);
-
-//   useEffect(() => {
-//     const fetchQuestions = async () => {
-//       try {
-//         const res = await fetch("/api/questions");
-//         if (!res.ok) throw new Error("Failed to fetch questions");
-
-//         const data = await res.json();
-//         if (data.questions) {
-//           setQuestions(data.questions);
-
-//           const subjects = Object.keys(data.questions);
-//           if (subjects.length > 0) {
-//             setSelectedSubject(subjects[0]);
-//             setActiveQuestion(1);
-//           }
-//         }
-//       } catch (err) {
-//         console.error("Error fetching questions:", err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchQuestions();
-//   }, [setQuestions, setSelectedSubject, setActiveQuestion]);
-
-//   return (
-//     <div className="relative h-screen bg-[#0a0a0a] text-white p-4 overflow-y-auto">
-//       <BackgroundGridPattern />
-//       <div className="h-full overflow-y-auto">
-//         <Header />
-//         <Navbar onOpenQuestions={() => setDrawerOpen(true)} />
-//         <QuestionNavigator open={drawerOpen} setOpen={setDrawerOpen} />
-//         <Questions />
-//       </div>
-//     </div>
-//   );
-// }
+import { Question, useExamStore } from "@/stores/examstore";
 
 export default function ExamPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -66,30 +19,56 @@ export default function ExamPage() {
   const isLoadingQuestions = useExamStore((s) => s.isLoadingQuestions);
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchQuestionsAndResponses = async () => {
       setIsLoadingQuestions(true);
+
       try {
-        const res = await fetch("/api/questions");
-        if (!res.ok) throw new Error("Failed to fetch questions");
+        // Fetch questions
+        const qRes = await fetch("/api/questions");
+        if (!qRes.ok) throw new Error("Failed to fetch questions");
+        const qData = await qRes.json();
 
-        const data = await res.json();
-        if (data.questions) {
-          setQuestions(data.questions);
+        // Set questions immediately
+        let questions = qData.questions || {};
+        setQuestions(questions);
 
-          const subjects = Object.keys(data.questions);
-          if (subjects.length > 0) {
-            setSelectedSubject(subjects[0]);
-            setActiveQuestion(1);
-          }
+        const rRes = await fetch("/api/response");
+        if (!rRes.ok) throw new Error("Failed to fetch responses");
+        const rData = await rRes.json();
+
+        const responses = rData.responses || [];
+
+        const updated: typeof questions = { ...questions };
+
+        for (const subject in updated) {
+          updated[subject] = updated[subject].map((q: Question) => {
+            const match = responses.find((r: { quesId: string; ansId: number; status: number; }) => r.quesId === q._id);
+            if (match) {
+              return {
+                ...q,
+                ansId: match.ansId,
+                status: match.status,
+              };
+            }
+            return q;
+          });
+        }
+
+        setQuestions(updated);
+
+        const subjects = Object.keys(updated);
+        if (subjects.length > 0) {
+          setSelectedSubject(subjects[0]);
+          setActiveQuestion(1);
         }
       } catch (err) {
-        console.error("Error fetching questions:", err);
+        console.error("Failed to load exam data:", err);
       } finally {
         setIsLoadingQuestions(false);
       }
     };
 
-    fetchQuestions();
+    fetchQuestionsAndResponses();
   }, [
     setQuestions,
     setSelectedSubject,

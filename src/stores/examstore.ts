@@ -10,6 +10,8 @@ export interface Question {
   subject: string;
   code?: string;
   codeLang?: string;
+  ansId?: number; // 👈 optional response info
+  status?: number; // 👈 optional response status (0, 1, 2)
 }
 
 interface ExamState {
@@ -45,7 +47,7 @@ export const useExamStore = create<ExamState>((set) => ({
   setIsLoadingQuestions: (val) => set({ isLoadingQuestions: val }),
 
   isSubmittingResponse: false,
-  setIsSubmittingResponse: (val) => set({ isSubmittingResponse: val }),
+  setIsSubmittingResponse: (val: boolean) => set({ isSubmittingResponse: val }),
 
   resetExam: () =>
     set({

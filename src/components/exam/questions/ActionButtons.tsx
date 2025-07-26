@@ -138,24 +138,37 @@ export default function ActionButtons({
   ];
 
   return (
-    <div className="flex flex-wrap sm:flex-nowrap justify-around items-center gap-4 mt-4">
-      {buttonConfigs.map(({ label, colorStyle, disabled, onClick }) => {
-        const baseStyle =
-          "px-4 sm:px-5 py-2 w-full sm:w-40 text-sm font-semibold rounded-full border transition-all text-center";
+    <>
+      <div className="flex flex-wrap sm:flex-nowrap justify-around items-center gap-4 mt-4">
+        {buttonConfigs.map(({ label, colorStyle, disabled, onClick }) => {
+          const baseStyle =
+            "px-4 sm:px-5 py-2 w-full sm:w-40 text-sm font-semibold rounded-full border transition-all text-center";
 
-        return (
-          <button
-            key={label}
-            className={`${baseStyle} ${colorStyle} ${
-              disabled ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            onClick={onClick}
-            disabled={disabled}
-          >
-            {label}
-          </button>
-        );
-      })}
-    </div>
+          return (
+            <button
+              key={label}
+              className={`${baseStyle} ${colorStyle} ${
+                disabled ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              onClick={onClick}
+              disabled={disabled}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-full shadow-lg transition-all"
+          onClick={() => {
+            // TODO: Handle submission logic here
+            console.log("Submitting test...");
+          }}
+        >
+          Submit Test
+        </button>
+      </div>
+    </>
   );
 }

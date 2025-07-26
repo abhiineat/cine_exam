@@ -19,23 +19,40 @@ export default function QuestionNavigator({
 
   const questionButtons = (
     <div className="flex flex-wrap gap-3 items-center py-4 px-2">
-      {questionList.map((_, i) => {
+      {questionList.map((question, i) => {
         const isActive = activeQuestion === i + 1;
+
+        // Determine background based on status
+        let bgColor = "text-gray-300 border border-gray-500"; // default
+
+        if (!isActive) {
+          switch (question.status) {
+            case 0:
+              bgColor = "bg-red-600 text-white border border-red-500";
+              break;
+            case 1:
+              bgColor = "bg-green-600 text-white border border-green-500";
+              break;
+            case 2:
+              bgColor = "bg-purple-600 text-white border border-purple-500";
+              break;
+          }
+        }
+
+        if (isActive) {
+          bgColor = "bg-blue-500 text-white shadow-md";
+        }
 
         return (
           <button
             key={i}
             onClick={() => {
               setActiveQuestion(i + 1);
-              setOpen(false); 
+              setOpen(false);
             }}
             className={`w-10 h-10 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full text-sm font-semibold 
               transition-all cursor-pointer flex items-center justify-center md:mb-4 md:my-2
-              ${
-                isActive
-                  ? "bg-blue-500 text-white shadow-md"
-                  : "text-gray-300 border border-gray-500"
-              }`}
+              ${bgColor}`}
           >
             {i + 1}
           </button>

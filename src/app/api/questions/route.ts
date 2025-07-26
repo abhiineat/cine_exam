@@ -6,13 +6,6 @@ import { redis } from "@/lib/redis";
 import authOptions from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
-const langMap = {
-  1: "C",
-  2: "C++",
-  3: "Python",
-  4: "Java",
-};
-
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -51,7 +44,7 @@ export async function GET() {
     const preferredLang = langMap[activity.preference as keyof typeof langMap];
     const subjects = ["HTML", "CSS", "SQL", "Aptitude", preferredLang];
 
-    const questionsBySubject: Record<string, any[]> = {};
+    const questionsBySubject: Record<string, Omit<typeof Question.prototype, "answer">[]> = {};
 
     for (const subject of subjects) {
       const questions = await Question.aggregate([

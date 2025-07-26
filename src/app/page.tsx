@@ -32,7 +32,7 @@ export default function LoginPage() {
 
     setIsGenerating(true);
 
-    let scrambleInterval = setInterval(() => {
+    const scrambleInterval = setInterval(() => {
       setGeneratedCredentials({
         studentNumber: `23CS${Math.floor(Math.random() * 9000 + 1000)}`,
         password: Math.random().toString(36).slice(-8).toUpperCase(),

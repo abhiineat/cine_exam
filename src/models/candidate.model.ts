@@ -27,7 +27,7 @@ candidateSchema.pre("save", async function (next) {
     candidate.password = await bcrypt.hash(candidate.password, salt);
     next();
   } catch (err) {
-    next(err as any);
+    next(err as Error);
   }
 });
 

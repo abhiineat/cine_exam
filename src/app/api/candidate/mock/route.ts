@@ -54,6 +54,7 @@ export async function POST() {
       },
     });
   } catch (err) {
+    console.error("[CREATE_CANDIDATE_ERROR]", err);
     return NextResponse.json(
       {
         success: false,

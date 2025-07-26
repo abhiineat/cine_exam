@@ -29,7 +29,7 @@ export default function ExamPage() {
         const qData = await qRes.json();
 
         // Set questions immediately
-        let questions = qData.questions || {};
+        const questions = qData.questions || {};
         setQuestions(questions);
 
         const rRes = await fetch("/api/response");

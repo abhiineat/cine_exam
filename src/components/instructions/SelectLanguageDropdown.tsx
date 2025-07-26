@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 interface SelectLanguageDropdownProps {
   selectedLanguage: string;
@@ -15,9 +13,6 @@ export default function SelectLanguageDropdown({
   setSelectedLanguage,
 }: SelectLanguageDropdownProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
-  const { update } = useSession();
-  const router = useRouter();
 
   const languages = [
     { value: "", label: "Choose a Language" },
@@ -39,7 +34,6 @@ export default function SelectLanguageDropdown({
         onBlur={() => setOpen(false)}
         onChange={handleChange}
         value={selectedLanguage}
-        disabled={loading}
       >
         {languages.map(({ value, label }, i) => (
           <option key={i+1} value={value} disabled={value === ""}>

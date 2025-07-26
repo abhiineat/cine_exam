@@ -34,7 +34,7 @@ export default function ActionButtons() {
   return (
     <div className="flex flex-wrap sm:flex-nowrap justify-around items-center gap-4 mt-4">
       {["Clear", "Mark for Review", "Next"].map((label) => {
-        let baseStyle =
+        const baseStyle =
           "px-4 sm:px-5 py-2 w-full sm:w-40 text-sm font-semibold rounded-full border transition-all text-center";
 
         let colorStyle = "";

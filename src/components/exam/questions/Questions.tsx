@@ -23,7 +23,7 @@ export default function Questions() {
         <div className="flex-1 overflow-hidden">
           {question ? (
             <QuestionPreview
-              key={`${selectedSubject}-${activeQuestion}`} 
+              key={`${selectedSubject}-${activeQuestion}`}
               question={question.question}
               code={question?.code || ""}
               codeLang={question?.codeLang || "plaintext"}
@@ -42,9 +42,18 @@ export default function Questions() {
       {/* Right Column */}
       <div className="flex flex-col w-full md:w-1/2 gap-4 flex-1">
         <div className="flex-1 overflow-hidden">
-          <OptionsList options={question?.options || []} quesId={question?._id} status={question.status || 0 } ansId={question.ansId}/>
+          <OptionsList
+            options={question?.options || []}
+            quesId={question?._id}
+            status={question.status || 0}
+            ansId={question.ansId}
+          />
         </div>
-        <ActionButtons />
+        <ActionButtons
+          quesId={question?._id}
+          status={question.status || 0}
+          ansId={question.ansId}
+        />
       </div>
     </section>
   );

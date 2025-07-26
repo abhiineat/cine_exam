@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/db";
 import Question from "@/models/question.model";
 import Activity, { IActivity } from "@/models/activity.model";
@@ -13,7 +13,7 @@ const langMap = {
   4: "Java",
 };
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     const candidateId = session?.user?.id;
@@ -24,6 +24,15 @@ export async function GET(req: NextRequest) {
 
     await connectToDB();
 
+    const cached = await redis.get(`question-${candidateId}`);
+
+    if (cached) {
+      const questions =
+        typeof cached === "string" ? JSON.parse(cached) : cached;
+
+      return NextResponse.json({ questions }, { status: 200 });
+    }
+
     const activity = await Activity.findOne({ candidateId }).lean<IActivity>();
     if (!activity) {
       return NextResponse.json(
@@ -31,6 +40,13 @@ export async function GET(req: NextRequest) {
         { status: 404 }
       );
     }
+
+    const langMap = {
+      1: "C",
+      2: "C++",
+      3: "Python",
+      4: "Java",
+    };
 
     const preferredLang = langMap[activity.preference as keyof typeof langMap];
     const subjects = ["HTML", "CSS", "SQL", "Aptitude", preferredLang];
@@ -40,7 +56,7 @@ export async function GET(req: NextRequest) {
     for (const subject of subjects) {
       const questions = await Question.aggregate([
         { $match: { subject } },
-        { $project: { answer: 0 } }, 
+        { $project: { answer: 0 } },
         { $sample: { size: 10 } },
       ]);
 
@@ -50,7 +66,7 @@ export async function GET(req: NextRequest) {
     await redis.set(
       `question-${candidateId}`,
       JSON.stringify(questionsBySubject),
-      { ex: 60 * 120 } 
+      { ex: 60 * 120 }
     );
 
     return NextResponse.json(

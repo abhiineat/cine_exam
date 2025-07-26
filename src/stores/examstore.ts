@@ -13,7 +13,7 @@ export interface Question {
 }
 
 interface ExamState {
-  questions: Record<string, Question[]>; 
+  questions: Record<string, Question[]>;
   setQuestions: (questions: Record<string, Question[]>) => void;
 
   selectedSubject: string;
@@ -21,6 +21,12 @@ interface ExamState {
 
   activeQuestion: number;
   setActiveQuestion: (index: number) => void;
+
+  isLoadingQuestions: boolean;
+  setIsLoadingQuestions: (val: boolean) => void;
+
+  isSubmittingResponse: boolean;
+  setIsSubmittingResponse: (val: boolean) => void;
 
   resetExam: () => void;
 }
@@ -34,6 +40,12 @@ export const useExamStore = create<ExamState>((set) => ({
 
   activeQuestion: 1,
   setActiveQuestion: (index) => set({ activeQuestion: index }),
+
+  isLoadingQuestions: true,
+  setIsLoadingQuestions: (val) => set({ isLoadingQuestions: val }),
+
+  isSubmittingResponse: false,
+  setIsSubmittingResponse: (val) => set({ isSubmittingResponse: val }),
 
   resetExam: () =>
     set({

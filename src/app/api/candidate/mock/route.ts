@@ -53,11 +53,11 @@ export async function POST() {
         password: password,
       },
     });
-  } catch (err: any) {
+  } catch (err) {
     return NextResponse.json(
       {
         success: false,
-        error: err.message,
+        error: "Failed to create candidate",
       },
       { status: 500 }
     );

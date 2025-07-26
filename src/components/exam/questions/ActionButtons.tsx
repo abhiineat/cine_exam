@@ -108,7 +108,7 @@ export default function ActionButtons({
     {
       label: "Previous",
       colorStyle:
-        "bg-gray-600/40 border-gray-500 text-gray-200 hover:bg-gray-700/40",
+        "bg-slate-700/40 border-slate-500 text-slate-200 hover:bg-slate-600/40",
       disabled: isFirstSubject && isFirstQuestion,
       onClick: handlePrevious,
     },

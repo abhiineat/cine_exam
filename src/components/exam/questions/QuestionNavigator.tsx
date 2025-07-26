@@ -1,31 +1,40 @@
 "use client";
+
 import { Dispatch, SetStateAction } from "react";
+import { useExamStore } from "@/stores/examstore";
 
 export default function QuestionNavigator({
   open,
   setOpen,
-  activeQuestion,
-  onQuestionClick,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  activeQuestion: number;
-  onQuestionClick?: (index: number) => void;
 }) {
+  const questions = useExamStore((s) => s.questions);
+  const selectedSubject = useExamStore((s) => s.selectedSubject);
+  const activeQuestion = useExamStore((s) => s.activeQuestion);
+  const setActiveQuestion = useExamStore((s) => s.setActiveQuestion);
+
+  const questionList = questions[selectedSubject] || [];
+
   const questionButtons = (
-    <div className="flex flex-wrap gap-3  items-center py-4 px-2">
-      {Array.from({ length: 20 }, (_, i) => {
+    <div className="flex flex-wrap gap-3 items-center py-4 px-2">
+      {questionList.map((_, i) => {
         const isActive = activeQuestion === i + 1;
+
         return (
           <button
-            key={i + 1}
-            onClick={() => onQuestionClick?.(i + 1)}
+            key={i}
+            onClick={() => {
+              setActiveQuestion(i + 1);
+              setOpen(false); 
+            }}
             className={`w-10 h-10 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full text-sm font-semibold 
               transition-all cursor-pointer flex items-center justify-center md:mb-4 md:my-2
               ${
                 isActive
                   ? "bg-blue-500 text-white shadow-md"
-                  : "text-gray-300"
+                  : "text-gray-300 border border-gray-500"
               }`}
           >
             {i + 1}

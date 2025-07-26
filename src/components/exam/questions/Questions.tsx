@@ -1,22 +1,39 @@
-import QuestionTabs from "@/components/exam/questions/QuestionTabs";
+"use client";
+
+import { useExamStore } from "@/stores/examstore";
+import QuestionPreview from "@/components/exam/questions/QuestionPreview";
 import ActionButtons from "@/components/exam/questions/ActionButtons";
 import OptionsList from "@/components/exam/questions/OptionsList";
+import { Question } from "@/stores/examstore";
 
-export default function Questions({ loading }: { loading: boolean }) {
+export default function Questions() {
+  const { questions, selectedSubject, activeQuestion } = useExamStore();
+
+  const subjectQuestions = questions[selectedSubject] || [];
+  const question: Question | undefined = subjectQuestions[activeQuestion - 1];
+
   return (
     <section
-      className="w-full md:w-[85%] lg:w-[80%] max-h-[70vh] p-2 rounded-lg
-        bg-white/5 backdrop-blur-[6px] border border-white/10
-        shadow-inner shadow-black/20 flex flex-col md:flex-row gap-4"
+      className="mt-10 lg:h-[65vh] rounded-lg
+      bg-neutral-900 backdrop-blur-[6px] border border-white/10
+      shadow-inner shadow-black/20 flex flex-col md:flex-row gap-4 p-4"
     >
       {/* Left Column */}
       <div className="flex flex-col w-full md:w-1/2 gap-4 flex-1">
         <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto p-4 rounded-2xl border border-white/10 bg-white/5">
-            {/* Question content goes here */}
-          </div>
+          {question ? (
+            <QuestionPreview
+              key={`${selectedSubject}-${activeQuestion}`} // 👈 add this line
+              question={question.question}
+              code={question?.code || ""}
+              codeLang={question?.codeLang || "plaintext"} // 👈 make sure codeLang comes from the question itself
+            />
+          ) : (
+            <div className="h-full flex items-center justify-center text-white/70 border border-white/10 rounded-2xl bg-white/5">
+              No question available
+            </div>
+          )}
         </div>
-        <QuestionTabs />
       </div>
 
       {/* Separator */}
@@ -25,7 +42,7 @@ export default function Questions({ loading }: { loading: boolean }) {
       {/* Right Column */}
       <div className="flex flex-col w-full md:w-1/2 gap-4 flex-1">
         <div className="flex-1 overflow-hidden">
-          <OptionsList />
+          <OptionsList options={question?.options || []} />
         </div>
         <ActionButtons />
       </div>

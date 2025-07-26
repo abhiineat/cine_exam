@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface Question {
+export interface Question {
   _id: string;
   question: string;
   options: {
@@ -9,6 +9,7 @@ interface Question {
   }[];
   subject: string;
   code?: string;
+  codeLang?: string;
 }
 
 interface ExamState {

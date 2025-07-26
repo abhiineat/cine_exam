@@ -2,44 +2,46 @@
 
 import { useState } from "react";
 
-const dummyOptions = [
-  "Option A",
-  "Option B",
-  "Option C",
-  "Option D",
-];
+interface Option {
+  id: number;
+  desc: string;
+}
 
-export default function OptionsList() {
-  const [selected, setSelected] = useState<string | null>(null);
+interface OptionsListProps {
+  options: Option[];
+}
+
+export default function OptionsList({ options }: OptionsListProps) {
+  const [selected, setSelected] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
-  const [lockedOption, setLockedOption] = useState<string | null>(null);
+  const [lockedOption, setLockedOption] = useState<number | null>(null);
 
-  const handleSelect = (option: string) => {
+  const handleSelect = (optionId: number) => {
     if (saving) return;
-    setSelected(option);
+    setSelected(optionId);
     setSaving(true);
-    setLockedOption(option);
+    setLockedOption(optionId);
 
     setTimeout(() => {
       setSaving(false);
       setLockedOption(null);
-      console.log(`Saved answer: ${option}`);
+      console.log(`Saved answer: ${optionId}`);
     }, 2000);
   };
 
   return (
-    <div className="h-full overflow-y-auto space-y-4 relative p-4">
-      {dummyOptions.map((option, idx) => (
+    <div className="h-full overflow-y-auto px-4 pb-4 space-y-4">
+      {options.map((option) => (
         <label
-          key={idx}
-          className={`group relative block p-4 rounded-2xl border text-sm font-medium cursor-pointer select-none transition-all
+          key={option.id}
+          className={`group relative block px-5 py-4 rounded-xl border text-base sm:text-lg font-medium cursor-pointer select-none transition-all
             ${
-              selected === option
+              selected === option.id
                 ? "bg-green-500/20 border-green-400 text-white"
-                : "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10"
+                : "bg-white/5 border-white/10 text-gray-200 hover:bg-white/10"
             }
             ${
-              saving && lockedOption !== option
+              saving && lockedOption !== option.id
                 ? "opacity-50 pointer-events-none"
                 : ""
             }
@@ -48,22 +50,23 @@ export default function OptionsList() {
           <input
             type="radio"
             name="option"
-            value={option}
+            value={option.id}
             className="hidden"
-            checked={selected === option}
-            onChange={() => handleSelect(option)}
+            checked={selected === option.id}
+            onChange={() => handleSelect(option.id)}
             disabled={saving}
           />
-          {option}
-          {saving && lockedOption === option && (
-            <span
-              className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 border-2 border-t-transparent border-white rounded-full animate-spin"
-              style={{ animationDuration: "0.4s" }}
-            />
-          )}
+          <div className="flex items-center justify-between gap-4">
+            <span className="flex-1">{option.desc}</span>
+            {saving && lockedOption === option.id && (
+              <span
+                className="h-4 w-4 border-2 border-t-transparent border-white rounded-full animate-spin"
+                style={{ animationDuration: "0.5s" }}
+              />
+            )}
+          </div>
         </label>
       ))}
     </div>
   );
 }
-

@@ -1,4 +1,36 @@
+"use client";
+
+import { useExamStore } from "@/stores/examstore";
+
 export default function ActionButtons() {
+  const {
+    questions,
+    selectedSubject,
+    setSelectedSubject,
+    activeQuestion,
+    setActiveQuestion,
+  } = useExamStore();
+
+  const subjectList = Object.keys(questions);
+  const currentSubjectIndex = subjectList.indexOf(selectedSubject);
+  const currentSubjectQuestions = questions[selectedSubject] || [];
+
+  const handleNext = () => {
+    const isLastQuestion = activeQuestion === currentSubjectQuestions.length;
+
+    if (isLastQuestion) {
+      const isLastSubject = currentSubjectIndex === subjectList.length - 1;
+      const nextSubject = isLastSubject
+        ? subjectList[0]
+        : subjectList[currentSubjectIndex + 1];
+
+      setSelectedSubject(nextSubject);
+      setActiveQuestion(1);
+    } else {
+      setActiveQuestion(activeQuestion + 1);
+    }
+  };
+
   return (
     <div className="flex flex-wrap sm:flex-nowrap justify-around items-center gap-4 mt-4">
       {["Clear", "Mark for Review", "Next"].map((label) => {
@@ -22,7 +54,14 @@ export default function ActionButtons() {
         }
 
         return (
-          <button key={label} className={`${baseStyle} ${colorStyle}`}>
+          <button
+            key={label}
+            className={`${baseStyle} ${colorStyle}`}
+            onClick={() => {
+              if (label === "Next") handleNext();
+              // Add logic for Clear and Mark for Review later
+            }}
+          >
             {label}
           </button>
         );

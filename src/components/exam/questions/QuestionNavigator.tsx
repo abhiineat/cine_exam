@@ -48,7 +48,7 @@ export default function QuestionNavigator({
             key={i}
             onClick={() => {
               setActiveQuestion(i + 1);
-              setOpen(false);
+              // setOpen(false);
             }}
             className={`w-10 h-10 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full text-sm font-semibold 
               transition-all cursor-pointer flex items-center justify-center md:mb-4 md:my-2

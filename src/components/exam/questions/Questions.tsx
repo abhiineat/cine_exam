@@ -5,6 +5,7 @@ import QuestionPreview from "@/components/exam/questions/QuestionPreview";
 import ActionButtons from "@/components/exam/questions/ActionButtons";
 import OptionsList from "@/components/exam/questions/OptionsList";
 import { Question } from "@/stores/examstore";
+import NavigationButtons from "@/components/exam/questions/NavigationButton";
 
 export default function Questions() {
   const { questions, selectedSubject, activeQuestion } = useExamStore();
@@ -14,13 +15,13 @@ export default function Questions() {
 
   return (
     <section
-      className="mt-10 lg:h-[65vh] rounded-lg
+      className="mt-5 lg:h-[65vh] rounded-lg
       bg-neutral-900 backdrop-blur-[6px] border border-white/10
       shadow-inner shadow-black/20 flex flex-col md:flex-row gap-4 p-4"
     >
       {/* Left Column */}
       <div className="flex flex-col w-full md:w-1/2 gap-4 flex-1">
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           {question ? (
             <QuestionPreview
               key={`${selectedSubject}-${activeQuestion}`}
@@ -32,8 +33,9 @@ export default function Questions() {
             <div className="h-full flex items-center justify-center text-white/70 border border-white/10 rounded-2xl bg-white/5">
               No question available
             </div>
-          )}
+          )}  
         </div>
+        <NavigationButtons />
       </div>
 
       {/* Separator */}

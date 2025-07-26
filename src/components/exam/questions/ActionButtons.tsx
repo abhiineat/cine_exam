@@ -11,48 +11,7 @@ export default function ActionButtons({
   status?: number;
   ansId?: number;
 }) {
-  const {
-    questions,
-    selectedSubject,
-    setSelectedSubject,
-    activeQuestion,
-    setActiveQuestion,
-    setQuestions,
-  } = useExamStore();
-
-  const subjectList = Object.keys(questions);
-  const currentSubjectIndex = subjectList.indexOf(selectedSubject);
-  const currentSubjectQuestions = questions[selectedSubject] || [];
-
-  const isLastQuestion = activeQuestion === currentSubjectQuestions.length;
-  const isLastSubject = currentSubjectIndex === subjectList.length - 1;
-  const isFirstSubject = currentSubjectIndex === 0;
-  const isFirstQuestion = activeQuestion === 1;
-
-  const handleNext = () => {
-    if (isLastQuestion) {
-      const nextSubject = isLastSubject
-        ? subjectList[0]
-        : subjectList[currentSubjectIndex + 1];
-      setSelectedSubject(nextSubject);
-      setActiveQuestion(1);
-    } else {
-      setActiveQuestion(activeQuestion + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (isFirstQuestion) {
-      if (!isFirstSubject) {
-        const prevSubject = subjectList[currentSubjectIndex - 1];
-        const prevSubjectQuestions = questions[prevSubject] || [];
-        setSelectedSubject(prevSubject);
-        setActiveQuestion(prevSubjectQuestions.length);
-      }
-    } else {
-      setActiveQuestion(activeQuestion - 1);
-    }
-  };
+  const { questions, selectedSubject, setQuestions } = useExamStore();
 
   const updateBackendAndState = async (
     newStatus: number,
@@ -71,9 +30,7 @@ export default function ActionButtons({
         }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to update response");
-      }
+      if (!res.ok) throw new Error("Failed to update response");
 
       const updatedQuestions = { ...questions };
       const subjectQs = [...(updatedQuestions[selectedSubject] || [])];
@@ -104,14 +61,12 @@ export default function ActionButtons({
     updateBackendAndState(newStatus, ansId);
   };
 
+  const handleSubmit = () => {
+    // TODO: Integrate actual submission logic
+    console.log("Submitting test...");
+  };
+
   const buttonConfigs = [
-    {
-      label: "Previous",
-      colorStyle:
-        "bg-slate-700/40 border-slate-500 text-slate-200 hover:bg-slate-600/40",
-      disabled: isFirstSubject && isFirstQuestion,
-      onClick: handlePrevious,
-    },
     {
       label: "Clear",
       colorStyle:
@@ -129,46 +84,33 @@ export default function ActionButtons({
       onClick: handleMarkReview,
     },
     {
-      label: "Next",
+      label: "Submit",
       colorStyle:
-        "bg-blue-700/40 border-blue-500 text-blue-200 hover:bg-blue-600/40",
+        "bg-emerald-600 border-emerald-500 text-white hover:bg-emerald-700",
       disabled: false,
-      onClick: handleNext,
+      onClick: handleSubmit,
     },
   ];
 
   return (
-    <>
-      <div className="flex flex-wrap sm:flex-nowrap justify-around items-center gap-4 mt-4">
-        {buttonConfigs.map(({ label, colorStyle, disabled, onClick }) => {
-          const baseStyle =
-            "px-4 sm:px-5 py-2 w-full sm:w-40 text-sm font-semibold rounded-full border transition-all text-center";
+    <div className="flex flex-wrap sm:flex-nowrap justify-around items-center gap-4 mt-4">
+      {buttonConfigs.map(({ label, colorStyle, disabled, onClick }) => {
+        const baseStyle =
+          "px-4 sm:px-5 py-2 w-full sm:w-40 text-sm font-semibold rounded-full border transition-all text-center";
 
-          return (
-            <button
-              key={label}
-              className={`${baseStyle} ${colorStyle} ${
-                disabled ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              onClick={onClick}
-              disabled={disabled}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-full shadow-lg transition-all"
-          onClick={() => {
-            // TODO: Handle submission logic here
-            console.log("Submitting test...");
-          }}
-        >
-          Submit Test
-        </button>
-      </div>
-    </>
+        return (
+          <button
+            key={label}
+            className={`${baseStyle} ${colorStyle} ${
+              disabled ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            onClick={onClick}
+            disabled={disabled}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
   );
 }

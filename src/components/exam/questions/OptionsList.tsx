@@ -25,18 +25,19 @@ export default function OptionsList({
   const [saving, setSaving] = useState(false);
   const [lockedOption, setLockedOption] = useState<number | null>(null);
 
-  const { questions, setQuestions, selectedSubject } = useExamStore();
+  const { questions, setQuestions, selectedSubject, isSubmittingResponse, setIsSubmittingResponse } = useExamStore();
 
   useEffect(() => {
     setSelected(ansId ?? null);
   }, [ansId]);
 
   const handleSelect = async (optionId: number) => {
-    if (saving || selected === optionId) return;
+    if (saving || selected === optionId || isSubmittingResponse) return;
 
     setSelected(optionId);
     setSaving(true);
     setLockedOption(optionId);
+    setIsSubmittingResponse(true); 
 
     const newStatus = status === 2 ? 2 : 1;
 
@@ -71,6 +72,7 @@ export default function OptionsList({
     } finally {
       setSaving(false);
       setLockedOption(null);
+      setIsSubmittingResponse(false);
     }
   };
 
@@ -86,10 +88,10 @@ export default function OptionsList({
                 : "bg-white/5 border-white/10 text-gray-200 hover:bg-white/10"
             }
             ${
-              saving && lockedOption !== option.id
+              (saving && lockedOption !== option.id) || isSubmittingResponse
                 ? "opacity-50 pointer-events-none"
                 : ""
-            }
+            } 
           `}
         >
           <input
@@ -99,7 +101,7 @@ export default function OptionsList({
             className="hidden"
             checked={selected === option.id}
             onChange={() => handleSelect(option.id)}
-            disabled={saving}
+            disabled={saving || isSubmittingResponse}
           />
           <div className="flex items-center justify-between gap-4">
             <span className="flex-1">{option.desc}</span>

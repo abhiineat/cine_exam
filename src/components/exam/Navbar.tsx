@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useExamStore } from "@/stores/examstore";
-import { List } from "lucide-react"; 
+import { List } from "lucide-react";
 
 export default function Navbar({
   onOpenQuestions,
@@ -14,7 +14,7 @@ export default function Navbar({
   const setActiveQuestion = useExamStore((s) => s.setActiveQuestion);
   const questions = useExamStore((s) => s.questions);
 
-  const subjects = Object.keys(questions); 
+  const subjects = Object.keys(questions);
   const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
 
   const handleTabClick = (tab: string) => {
@@ -23,7 +23,6 @@ export default function Navbar({
       setActiveQuestion(1);
     }
 
-    // Scroll to tab if it's overflowing
     tabRefs.current[tab]?.scrollIntoView({
       behavior: "smooth",
       inline: "center",
@@ -32,47 +31,7 @@ export default function Navbar({
   };
 
   return (
-    // <nav
-    //   className="w-full mt-5 mx-auto px-4 py-3
-    //   rounded-md sm:rounded-full
-    //   flex flex-wrap sm:flex-nowrap items-center justify-between gap-3
-    //   backdrop-blur-[6px] bg-neutral-800/50 border border-neutral-800"
-    // >
-    //   {/* Scrollable Tabs */}
-    //   <div className="flex overflow-x-auto py-2 gap-3 sm:gap-5 flex-1 pr-2">
-    //     {subjects.map((tab) => (
-    //       <button
-    //         key={tab}
-    //         ref={(el) => {
-    //           tabRefs.current[tab] = el;
-    //         }}
-    //         onClick={() => handleTabClick(tab)}
-    //         className={`flex-shrink-0 ml-1 sm:px-5 py-2 text-xs sm:text-sm
-    //         min-w-[6rem] sm:min-w-[8rem]
-    //         rounded-md sm:rounded-full
-    //         font-medium uppercase tracking-wide
-    //         backdrop-blur-sm border border-white/10 transition-all cursor-pointer
-    //         ${
-    //           selectedSubject === tab
-    //             ? "bg-blue-600 text-white shadow-md scale-105"
-    //             : "bg-white/5 text-white hover:bg-white/10 hover:shadow-md hover:scale-105"
-    //         }`}
-    //       >
-    //         {tab}
-    //       </button>
-    //     ))}
-    //   </div>
-
-    //   {/* Open Questions Button */}
-    //   <button
-    //     onClick={onOpenQuestions}
-    //     className="px-4 py-2 text-sm font-medium text-white rounded-md sm:rounded-full
-    //     bg-green-900 hover:bg-blue-700 transition-all shrink-0"
-    //   >
-    //     Questions
-    //   </button>
-    // </nav>
-    <nav className="w-full mt-5 mx-auto px-4 py-3 rounded-xl sm:rounded-full flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 backdrop-blur-md bg-gradient-to-r from-neutral-800/80 via-neutral-900/70 to-neutral-800/80 border border-neutral-700 shadow-inner shadow-black/30">
+    <nav className="w-full mt-5 mx-auto px-4 py-3 rounded-xl sm:rounded-full flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 backdrop-blur-md bg-gradient-to-r from-neutral-800/80 via-neutral-900/70 to-neutral-800/80 border border-neutral-700 shadow-inner shadow-black/30 custom-scrollbar">
       {/* Scrollable Tabs */}
       <div className="flex overflow-x-auto py-2 gap-3 sm:gap-5 flex-1 pr-2 scrollbar-hide">
         {subjects.map((tab) => (

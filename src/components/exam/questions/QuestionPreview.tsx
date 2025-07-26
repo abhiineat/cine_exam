@@ -24,12 +24,15 @@ const QuestionPreview: FC<QuestionPreviewProps> = ({
   code,
   codeLang = "plaintext",
 }) => {
-const activeQuestion = useExamStore((state) => state.activeQuestion);
-    console.log(codeLang);
+  const activeQuestion = useExamStore((state) => state.activeQuestion);
+
   return (
     <div className="h-full overflow-y-auto p-4 rounded-2xl border border-white/10 bg-neutral-800">
       <p className="text-xl font-semibold text-amber-200 leading-relaxed mb-4 whitespace-pre-wrap">
-        <span className="font-bold text-2xl text-amber-400">Q.{activeQuestion+ "  "}</span> {question}
+        <span className="font-bold text-2xl text-amber-400">
+          Q.{activeQuestion + "  "}
+        </span>{" "}
+        {question}
       </p>
 
       {code && (
@@ -55,8 +58,8 @@ const activeQuestion = useExamStore((state) => state.activeQuestion);
                 top: 16,
                 bottom: 16,
               },
-              lineDecorationsWidth: 10, 
-              lineNumbersMinChars: 2, 
+              lineDecorationsWidth: 10,
+              lineNumbersMinChars: 2,
             }}
           />
         </div>

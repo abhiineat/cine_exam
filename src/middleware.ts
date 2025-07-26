@@ -17,12 +17,24 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isERoute = pathname.startsWith("/e");
 
+  const allowedPaths = [
+    "/e/instructions",
+    "/e/exam",
+    "/e/exam/submit",
+    "/e/feedback",
+    "/e/thanks",
+  ];
+
   if (!token && isERoute) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (token) {
     const { isPreferenceSet, isExamCompleted } = token;
+
+    if (isERoute && !allowedPaths.includes(pathname)) {
+      return NextResponse.redirect(new URL("/e/exam", req.url));
+    }
 
     if (!isERoute) {
       if (isExamCompleted) {
@@ -34,12 +46,16 @@ export async function middleware(req: NextRequest) {
       }
     }
 
-    if (isPreferenceSet && !isExamCompleted && pathname !== "/e/exam") {
-      return NextResponse.redirect(new URL("/e/exam", req.url));
-    }
-
     if (!isPreferenceSet && pathname !== "/e/instructions") {
       return NextResponse.redirect(new URL("/e/instructions", req.url));
+    }
+
+    if (
+      isPreferenceSet &&
+      !isExamCompleted &&
+      !pathname.startsWith("/e/exam")
+    ) {
+      return NextResponse.redirect(new URL("/e/exam", req.url));
     }
 
     if (

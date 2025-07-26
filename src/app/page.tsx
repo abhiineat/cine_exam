@@ -15,6 +15,7 @@ export default function LoginPage() {
     password: string;
   } | null>({ studentNumber: "*%@*#&#$", password: "*%@*#&#$" });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 
   const router = useRouter();
@@ -71,6 +72,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!validate()) return;
 
@@ -88,6 +90,7 @@ export default function LoginPage() {
         password: "Invalid credentials. Try again or regenerate.",
       });
     }
+    setLoading(false);
   };
 
 
@@ -95,10 +98,14 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-neutral-900 px-4 py-10">
       <BackgroundGridPattern />
       <div className="backdrop-blur-[5px] border border-neutral-700/50 bg-neutral-800/50 rounded-3xl max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 z-10">
-        
         <div className="p-8 border-r border-neutral-700">
           <div className="flex flex-col items-center mb-6">
-            <Image src="/csi-logo.webp" alt="CSI Logo" width={120} height={120} />
+            <Image
+              src="/csi-logo.webp"
+              alt="CSI Logo"
+              width={120}
+              height={120}
+            />
             <h1 className="text-2xl font-semibold text-white mt-4">
               CINE&apos;24{" "}
               <span className="text-base italic font-medium text-neutral-400">
@@ -108,7 +115,6 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             <div className="relative">
               <input
                 type="text"
@@ -129,7 +135,7 @@ export default function LoginPage() {
                 Student Number
               </label>
               {errors.studentNumber && (
-                <p className="text-red-400 text-xs mt-1">
+                <p className="text-red-400 text-sm mt-1">
                   {errors.studentNumber}
                 </p>
               )}
@@ -156,15 +162,45 @@ export default function LoginPage() {
                 Password
               </label>
               {errors.password && (
-                <p className="text-red-400 text-xs mt-1">{errors.password}</p>
+                <p className="text-red-400 text-sm mt-1 ml-4">
+                  {errors.password}
+                </p>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-700/60 hover:bg-blue-800/60 text-white py-3 rounded-full font-semibold transition duration-200 ease-in-out transform hover:-translate-y-1 active:translate-y-0 active:scale-95 shadow-md hover:shadow-lg"
+              disabled={loading}
+              className={`w-full bg-blue-700/60 hover:bg-blue-800/60 text-white py-3 rounded-full font-semibold transition duration-200 ease-in-out transform hover:-translate-y-1 active:translate-y-0 active:scale-95 shadow-md hover:shadow-lg ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
             >
-              🚀 Login
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  <span>Logging in...</span>
+                </div>
+              ) : (
+                "🚀 Login"
+              )}
             </button>
           </form>
         </div>
@@ -203,7 +239,6 @@ export default function LoginPage() {
           >
             {isGenerating ? "✨ Generating..." : "♻️ Regenerate"}
 
-            {/* Shimmer effect */}
             {isGenerating && (
               <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-slide" />
             )}

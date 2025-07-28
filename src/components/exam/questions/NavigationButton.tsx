@@ -1,6 +1,7 @@
 "use client";
 
 import { useExamStore } from "@/stores/examstore";
+import { getSocket } from "@/hooks/useSocket";
 
 export default function NavigationButtons() {
   const {
@@ -20,6 +21,20 @@ export default function NavigationButtons() {
   const isFirstQuestion = activeQuestion === 1;
   const isLastQuestion = activeQuestion === currentSubjectQuestions.length;
 
+  const sendNavigationUpdate = (quesId: string) => {
+      const socket = getSocket();
+      if (socket.readyState === WebSocket.OPEN) {
+          socket.send(
+              JSON.stringify({
+                  event: "question-navigated",
+                  quesId,
+                  status: 0,
+                  ansId: -1,
+              })
+          );
+      }
+  };
+
   const handleNext = () => {
     if (isLastQuestion) {
       const nextSubject = isLastSubject
@@ -27,8 +42,14 @@ export default function NavigationButtons() {
         : subjectList[currentSubjectIndex + 1];
       setSelectedSubject(nextSubject);
       setActiveQuestion(1);
+
+      const firstQuesId = questions[nextSubject]?.[0]?._id;
+      if (firstQuesId) sendNavigationUpdate(firstQuesId);
     } else {
+      const nextQuesId = currentSubjectQuestions[activeQuestion]?._id;
       setActiveQuestion(activeQuestion + 1);
+
+      if (nextQuesId) sendNavigationUpdate(nextQuesId);
     }
   };
 
@@ -39,9 +60,16 @@ export default function NavigationButtons() {
         const prevSubjectQuestions = questions[prevSubject] || [];
         setSelectedSubject(prevSubject);
         setActiveQuestion(prevSubjectQuestions.length);
+
+        const lastQuesId =
+            prevSubjectQuestions[prevSubjectQuestions.length - 1]?._id;
+        if (lastQuesId) sendNavigationUpdate(lastQuesId);
       }
     } else {
+      const prevQuesId = currentSubjectQuestions[activeQuestion - 2]?._id;
       setActiveQuestion(activeQuestion - 1);
+
+      if (prevQuesId) sendNavigationUpdate(prevQuesId);
     }
   };
 

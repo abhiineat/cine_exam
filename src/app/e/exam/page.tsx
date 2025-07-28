@@ -80,7 +80,7 @@ export default function ExamPage() {
     <div className="relative h-screen bg-[#0a0a0a] text-white p-4 overflow-y-auto">
       <BackgroundGridPattern />
       <div className="h-full overflow-y-auto">
-        <Header />
+        <Header page="exam"/>
         <Navbar onOpenQuestions={() => setDrawerOpen(true)} />
         <QuestionNavigator open={drawerOpen} setOpen={setDrawerOpen} />
         {isLoadingQuestions ? <QuestionsSkeleton /> : <Questions />}

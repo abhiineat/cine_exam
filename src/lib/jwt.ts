@@ -9,7 +9,7 @@ const generateJWT = (candidateId: string, email: string, name: string) => {
   };
 
   return jwt.sign(payload, process.env.NEXTAUTH_SECRET!, {
-    expiresIn: "1h",
+    expiresIn: "2h",
   });
 };
 

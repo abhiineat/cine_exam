@@ -33,6 +33,10 @@ const authOptions: NextAuthOptions = {
 
         const activity = await Activity.findOne({ candidateId: user._id });
 
+        if(activity && activity?.isExamCompleted) {
+            throw new Error(`Exam has been completed for Student Number: ${credentials.studentNumber}. You cannot sign in again.`);
+        }
+
         return {
           id: user._id.toString(),
           name: user.name,

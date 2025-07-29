@@ -87,7 +87,7 @@ export default function LoginPage() {
     } else {
       setErrors({
         ...errors,
-        password: "Invalid credentials. Try again or regenerate.",
+        password: "Unable to login. Try again or regenerate.",
       });
     }
     setLoading(false);

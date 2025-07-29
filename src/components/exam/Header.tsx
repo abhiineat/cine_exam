@@ -1,34 +1,61 @@
 "use client";
+
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSocketStore } from "@/stores/socketstore";
+
+const TOTAL_DURATION = 2 * 60 * 60; // 2 hours in seconds
 
 export default function Header({ page }: { page?: string }) {
-    const [remainingTime, setRemainingTime] = useState(2 * 60 * 60); // 2 hours in seconds
+    const socket = useSocketStore((s) => s.socket);
+    const [remainingTime, setRemainingTime] = useState<number | null>(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        if (page !== "exam" && page !== "submit") return;
+        const fetchActivity = async () => {
+            try {
+                const res = await fetch("/api/activity");
+                if (!res.ok) throw new Error("Failed to fetch activity");
+                const data = await res.json();
+                const timeSpent = data[0]?.timeSpent ?? 0;
 
-        const interval = setInterval(() => {
+                const remaining = Math.max(TOTAL_DURATION - timeSpent, 0);
+
+                setRemainingTime(remaining);
+            } catch (error) {
+                console.error("Error fetching activity:", error);
+                setRemainingTime(TOTAL_DURATION);
+            }
+        };
+
+        fetchActivity();
+    }, []);
+
+    useEffect(() => {
+        if (remainingTime === null) return;
+
+        intervalRef.current = setInterval(() => {
             setRemainingTime((prev) => {
-                if (prev <= 1) {
-                    clearInterval(interval);
-                    return 0;
+                const next = (prev ?? TOTAL_DURATION) - 1;
+
+                if (next % 15 === 0 && socket?.send) {
+                    const timeSpent = TOTAL_DURATION - next;
+                    socket.send(
+                        JSON.stringify({ event: "sync-time", timeSpent })
+                    );
                 }
-                return prev - 1;
+
+                return next > 0 ? next : 0;
             });
         }, 1000);
 
-        return () => clearInterval(interval); // Cleanup on unmount
-    }, [page]);
+        return () => clearInterval(intervalRef.current!);
+    }, [remainingTime, socket]);
 
-    const formatTime = (seconds: number) => {
-        const hrs = Math.floor(seconds / 3600)
-            .toString()
-            .padStart(2, "0");
-        const mins = Math.floor((seconds % 3600) / 60)
-            .toString()
-            .padStart(2, "0");
-        const secs = (seconds % 60).toString().padStart(2, "0");
+    const formatTime = (total: number): string => {
+        const hrs = String(Math.floor(total / 3600)).padStart(2, "0");
+        const mins = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
+        const secs = String(total % 60).padStart(2, "0");
         return `${hrs}:${mins}:${secs}`;
     };
 
@@ -65,20 +92,19 @@ export default function Header({ page }: { page?: string }) {
                     </span>
                 </div>
             )}
-
-            {/* Timer */}
-            {(page === "exam" || page === "submit") && (
-                <div
-                    className="px-4 py-1.5 sm:py-2 rounded-md sm:rounded-full 
-  bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg 
-  border border-white/15 shadow-inner shadow-black/20 
-  animate-pulse-slow"
-                >
-                    <span className="text-base sm:text-lg md:text-xl font-mono text-emerald-300 tracking-wide">
-                        {formatTime(remainingTime)}
-                    </span>
-                </div>
-            )}
+            {(page === "exam" || page === "submit") &&
+                remainingTime !== null && (
+                    <div
+                        className="px-4 py-1.5 sm:py-2 rounded-md sm:rounded-full 
+          bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg 
+          border border-white/15 shadow-inner shadow-black/20 
+          animate-pulse-slow"
+                    >
+                        <span className="text-base sm:text-lg md:text-xl font-mono text-emerald-300 tracking-wide">
+                            {formatTime(remainingTime)}
+                        </span>
+                    </div>
+                )}
         </header>
     );
 }

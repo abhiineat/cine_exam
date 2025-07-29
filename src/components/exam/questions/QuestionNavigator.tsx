@@ -2,6 +2,7 @@
 
 import { Dispatch, SetStateAction } from "react";
 import { useExamStore } from "@/stores/examstore";
+import { useSocketStore } from "@/stores/socketstore";
 
 export default function QuestionNavigator({
   open,
@@ -11,31 +12,65 @@ export default function QuestionNavigator({
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const questions = useExamStore((s) => s.questions);
+  const setQuestions = useExamStore((s) => s.setQuestions);
   const selectedSubject = useExamStore((s) => s.selectedSubject);
   const activeQuestion = useExamStore((s) => s.activeQuestion);
   const setActiveQuestion = useExamStore((s) => s.setActiveQuestion);
 
+  const socket = useSocketStore((s) => s.socket);
+
   const questionList = questions[selectedSubject] || [];
+
+  const sendNavigationUpdate = async (quesId: string) => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+          console.log("Sending navigation update for question:", quesId);
+          socket.send(
+              JSON.stringify({
+                  event: "question-navigated",
+                  quesId,
+                  status: 0,
+                  ansId: -1,
+              })
+          );
+      }
+  };
+
+  const handleQuestionClick = (index: number) => {
+      const question = questionList[index];
+
+      if (question.status === undefined) {
+          const updatedQuestions = { ...questions };
+          updatedQuestions[selectedSubject][index] = {
+              ...question,
+              status: 0,
+              ansId: -1,
+          };
+          setQuestions(updatedQuestions);
+
+          sendNavigationUpdate(question._id);
+      }
+
+      setActiveQuestion(index + 1);
+      // setOpen(false); 
+  };
 
   const questionButtons = (
     <div className="flex flex-wrap gap-3 items-center py-4 px-2">
       {questionList.map((question, i) => {
         const isActive = activeQuestion === i + 1;
-
-        // Determine background based on status
-        let bgColor = "text-gray-300 border border-gray-500"; // default
+        let bgColor = "text-gray-300 border border-gray-500";
 
         if (!isActive) {
-          switch (question.status) {
-            case 0:
-              bgColor = "bg-red-600 text-white border border-red-500";
-              break;
-            case 1:
-              bgColor = "bg-green-600 text-white border border-green-500";
-              break;
-            case 2:
-              bgColor = "bg-purple-600 text-white border border-purple-500";
-              break;
+          switch (Number(question.status)) {
+              case 0:
+                  bgColor = "bg-red-600 text-white border border-red-500";
+                  break;
+              case 1:
+                  bgColor = "bg-green-600 text-white border border-green-500";
+                  break;
+              case 2:
+                  bgColor = "bg-purple-600 text-white border border-purple-500";
+                  break;
           }
         }
 
@@ -46,10 +81,7 @@ export default function QuestionNavigator({
         return (
           <button
             key={i}
-            onClick={() => {
-              setActiveQuestion(i + 1);
-              // setOpen(false);
-            }}
+            onClick={()=> handleQuestionClick(i)}
             className={`w-10 h-10 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full text-sm font-semibold 
               transition-all cursor-pointer flex items-center justify-center md:mb-4 md:my-2
               ${bgColor}`}

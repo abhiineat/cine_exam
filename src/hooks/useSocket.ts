@@ -20,7 +20,7 @@ export async function getSocket(): Promise<WebSocket> {
             const token = await fetchToken();
             if (!token) throw new Error("Missing token");
 
-            socket = new WebSocket(`ws://localhost:8080/v1/cine`);
+            socket = new WebSocket(`ws://localhost:8080/cine?token=${token}`);
 
             socket.onopen = () => {
                 console.log("🔌 WebSocket connected");

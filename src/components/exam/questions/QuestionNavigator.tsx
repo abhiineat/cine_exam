@@ -25,17 +25,21 @@ export default function QuestionNavigator({
         // Determine background based on status
         let bgColor = "text-gray-300 border border-gray-500"; // default
 
+        console.log("Question status:", question.status, "Active:", isActive, "Index:", i+1);
+
+        console.log(typeof question.status, question.status);
         if (!isActive) {
-          switch (question.status) {
-            case 0:
-              bgColor = "bg-red-600 text-white border border-red-500";
-              break;
-            case 1:
-              bgColor = "bg-green-600 text-white border border-green-500";
-              break;
-            case 2:
-              bgColor = "bg-purple-600 text-white border border-purple-500";
-              break;
+          switch (Number(question.status)) {
+              case 0:
+                  console.log("Question is not answered:", question._id);
+                  bgColor = "bg-red-600 text-white border border-red-500";
+                  break;
+              case 1:
+                  bgColor = "bg-green-600 text-white border border-green-500";
+                  break;
+              case 2:
+                  bgColor = "bg-purple-600 text-white border border-purple-500";
+                  break;
           }
         }
 

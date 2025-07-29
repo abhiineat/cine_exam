@@ -1,7 +1,7 @@
 "use client";
 
 import { useExamStore } from "@/stores/examstore";
-import { getSocket } from "@/hooks/useSocket";
+import { useSocketStore } from "@/stores/socketstore";
 
 export default function NavigationButtons() {
     const {
@@ -21,9 +21,11 @@ export default function NavigationButtons() {
     const isFirstQuestion = activeQuestion === 1;
     const isLastQuestion = activeQuestion === currentSubjectQuestions.length;
 
+    const socket = useSocketStore((s) => s.socket);
+
     const sendNavigationUpdate = async (quesId: string) => {
-        const socket = await getSocket();
-        if (socket.readyState === WebSocket.OPEN) {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            console.log("Sending navigation update for question:", quesId);
             socket.send(
                 JSON.stringify({
                     event: "question-navigated",

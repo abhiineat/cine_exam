@@ -6,6 +6,7 @@ import { useSocketStore } from "@/stores/socketstore";
 export default function NavigationButtons() {
     const {
         questions,
+        setQuestions,
         selectedSubject,
         setSelectedSubject,
         activeQuestion,
@@ -37,6 +38,60 @@ export default function NavigationButtons() {
         }
     };
 
+    // const handleNext = () => {
+    //     if (isLastQuestion) {
+    //         const nextSubject = isLastSubject
+    //             ? subjectList[0]
+    //             : subjectList[currentSubjectIndex + 1];
+    //         setSelectedSubject(nextSubject);
+    //         setActiveQuestion(1);
+
+    //         const firstQuesId = questions[nextSubject]?.[0]?._id;
+    //         if (firstQuesId) sendNavigationUpdate(firstQuesId);
+    //     } else {
+    //         const nextQuesId = currentSubjectQuestions[activeQuestion]?._id;
+    //         setActiveQuestion(activeQuestion + 1);
+
+    //         if (nextQuesId) sendNavigationUpdate(nextQuesId);
+    //     }
+    // };
+
+    // const handlePrevious = () => {
+    //     if (isFirstQuestion) {
+    //         if (!isFirstSubject) {
+    //             const prevSubject = subjectList[currentSubjectIndex - 1];
+    //             const prevSubjectQuestions = questions[prevSubject] || [];
+    //             setSelectedSubject(prevSubject);
+    //             setActiveQuestion(prevSubjectQuestions.length);
+
+    //             const lastQuesId =
+    //                 prevSubjectQuestions[prevSubjectQuestions.length - 1]?._id;
+    //             if (lastQuesId) sendNavigationUpdate(lastQuesId);
+    //         }
+    //     } else {
+    //         const prevQuesId = currentSubjectQuestions[activeQuestion - 2]?._id;
+    //         setActiveQuestion(activeQuestion - 1);
+
+    //         if (prevQuesId) sendNavigationUpdate(prevQuesId);
+    //     }
+    // };
+
+    const updateQuestionIfNeeded = (subject: string, index: number) => {
+        const ques = questions[subject]?.[index];
+        if (!ques || ques.status !== undefined) return;
+
+        // Mark the question with status and ansId
+        const updatedQuestions = { ...questions };
+        updatedQuestions[subject][index] = {
+            ...ques,
+            status: 0,
+            ansId: -1,
+        };
+
+        setQuestions(updatedQuestions);
+        sendNavigationUpdate(ques._id);
+    };
+
     const handleNext = () => {
         if (isLastQuestion) {
             const nextSubject = isLastSubject
@@ -45,13 +100,11 @@ export default function NavigationButtons() {
             setSelectedSubject(nextSubject);
             setActiveQuestion(1);
 
-            const firstQuesId = questions[nextSubject]?.[0]?._id;
-            if (firstQuesId) sendNavigationUpdate(firstQuesId);
+            updateQuestionIfNeeded(nextSubject, 0);
         } else {
-            const nextQuesId = currentSubjectQuestions[activeQuestion]?._id;
+            const nextIndex = activeQuestion;
             setActiveQuestion(activeQuestion + 1);
-
-            if (nextQuesId) sendNavigationUpdate(nextQuesId);
+            updateQuestionIfNeeded(selectedSubject, nextIndex);
         }
     };
 
@@ -60,18 +113,16 @@ export default function NavigationButtons() {
             if (!isFirstSubject) {
                 const prevSubject = subjectList[currentSubjectIndex - 1];
                 const prevSubjectQuestions = questions[prevSubject] || [];
+                const lastIndex = prevSubjectQuestions.length - 1;
                 setSelectedSubject(prevSubject);
                 setActiveQuestion(prevSubjectQuestions.length);
 
-                const lastQuesId =
-                    prevSubjectQuestions[prevSubjectQuestions.length - 1]?._id;
-                if (lastQuesId) sendNavigationUpdate(lastQuesId);
+                updateQuestionIfNeeded(prevSubject, lastIndex);
             }
         } else {
-            const prevQuesId = currentSubjectQuestions[activeQuestion - 2]?._id;
+            const prevIndex = activeQuestion - 2;
             setActiveQuestion(activeQuestion - 1);
-
-            if (prevQuesId) sendNavigationUpdate(prevQuesId);
+            updateQuestionIfNeeded(selectedSubject, prevIndex);
         }
     };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSocketStore } from "@/stores/socketstore";
 import BackgroundGridPattern from "@/components/ui/BackgroundGridPattern";
 import { toast } from "sonner";
@@ -18,50 +18,49 @@ export default function ExamLayout({
     const socket = useSocketStore((s) => s.socket);
 
     const [isFullscreen, setIsFullscreen] = useState(true);
-    const [tabSwitchCount, setTabSwitchCount] = useState(0);
+    const tabSwitchCountRef = useRef(0); // ← useRef instead of useState
 
     useEffect(() => {
         initSocket();
         return () => closeSocket();
-    }, []);
+    }, [initSocket, closeSocket]);
 
     useEffect(() => {
         const checkFullscreen = () => {
             const fullscreen =
                 document.fullscreenElement ||
-                (document as any).webkitFullscreenElement ||
-                (document as any).mozFullScreenElement ||
-                (document as any).msFullscreenElement;
+                (document as Document & { webkitFullscreenElement?: Element })
+                    .webkitFullscreenElement ||
+                (document as Document & { mozFullScreenElement?: Element })
+                    .mozFullScreenElement ||
+                (document as Document & { msFullscreenElement?: Element })
+                    .msFullscreenElement;
 
             setIsFullscreen(!!fullscreen);
         };
 
         const handleVisibilityChange = () => {
             if (document.hidden) {
-                setTabSwitchCount((prev) => {
-                    const updated = prev + 1;
+                tabSwitchCountRef.current += 1;
+                const updated = tabSwitchCountRef.current;
 
-                    setTimeout(() => {
-                        toast.warning(
-                            `You switched tabs ${updated}/${MAX_TAB_SWITCHES}`,
-                            {
-                                description:
-                                    updated >= MAX_TAB_SWITCHES
-                                        ? "You will now be removed from the exam."
-                                        : "Don't switch tabs again or you'll be disqualified.",
-                            }
-                        );
-                    }, 300); // Wait a bit for browser to resume rendering
+                setTimeout(() => {
+                    toast.warning(
+                        `You switched tabs ${updated}/${MAX_TAB_SWITCHES}`,
+                        {
+                            description:
+                                updated >= MAX_TAB_SWITCHES
+                                    ? "You will now be removed from the exam."
+                                    : "Don't switch tabs again or you'll be disqualified.",
+                        }
+                    );
+                }, 300);
 
-                    if (updated >= MAX_TAB_SWITCHES) {
-                        endExam("Too many tab switches");
-                    }
-
-                    return updated;
-                });
+                if (updated >= MAX_TAB_SWITCHES) {
+                    endExam("Too many tab switches");
+                }
             }
         };
-
 
         const endExam = (reason: string) => {
             if (socket && socket.readyState === WebSocket.OPEN) {
@@ -107,12 +106,27 @@ export default function ExamLayout({
     const handleEnterFullscreen = () => {
         const el = document.documentElement;
         if (el.requestFullscreen) el.requestFullscreen();
-        else if ((el as any).webkitRequestFullscreen)
-            (el as any).webkitRequestFullscreen();
-        else if ((el as any).mozRequestFullScreen)
-            (el as any).mozRequestFullScreen();
-        else if ((el as any).msRequestFullscreen)
-            (el as any).msRequestFullscreen();
+        else if (
+            (el as HTMLElement & { webkitRequestFullscreen?: () => void })
+                .webkitRequestFullscreen
+        )
+            (
+                el as HTMLElement & { webkitRequestFullscreen: () => void }
+            ).webkitRequestFullscreen();
+        else if (
+            (el as HTMLElement & { mozRequestFullScreen?: () => void })
+                .mozRequestFullScreen
+        )
+            (
+                el as HTMLElement & { mozRequestFullScreen: () => void }
+            ).mozRequestFullScreen();
+        else if (
+            (el as HTMLElement & { msRequestFullscreen?: () => void })
+                .msRequestFullscreen
+        )
+            (
+                el as HTMLElement & { msRequestFullscreen: () => void }
+            ).msRequestFullscreen();
     };
 
     if (!isFullscreen) {

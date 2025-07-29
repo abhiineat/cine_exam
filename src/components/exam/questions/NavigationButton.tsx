@@ -38,44 +38,6 @@ export default function NavigationButtons() {
         }
     };
 
-    // const handleNext = () => {
-    //     if (isLastQuestion) {
-    //         const nextSubject = isLastSubject
-    //             ? subjectList[0]
-    //             : subjectList[currentSubjectIndex + 1];
-    //         setSelectedSubject(nextSubject);
-    //         setActiveQuestion(1);
-
-    //         const firstQuesId = questions[nextSubject]?.[0]?._id;
-    //         if (firstQuesId) sendNavigationUpdate(firstQuesId);
-    //     } else {
-    //         const nextQuesId = currentSubjectQuestions[activeQuestion]?._id;
-    //         setActiveQuestion(activeQuestion + 1);
-
-    //         if (nextQuesId) sendNavigationUpdate(nextQuesId);
-    //     }
-    // };
-
-    // const handlePrevious = () => {
-    //     if (isFirstQuestion) {
-    //         if (!isFirstSubject) {
-    //             const prevSubject = subjectList[currentSubjectIndex - 1];
-    //             const prevSubjectQuestions = questions[prevSubject] || [];
-    //             setSelectedSubject(prevSubject);
-    //             setActiveQuestion(prevSubjectQuestions.length);
-
-    //             const lastQuesId =
-    //                 prevSubjectQuestions[prevSubjectQuestions.length - 1]?._id;
-    //             if (lastQuesId) sendNavigationUpdate(lastQuesId);
-    //         }
-    //     } else {
-    //         const prevQuesId = currentSubjectQuestions[activeQuestion - 2]?._id;
-    //         setActiveQuestion(activeQuestion - 1);
-
-    //         if (prevQuesId) sendNavigationUpdate(prevQuesId);
-    //     }
-    // };
-
     const updateQuestionIfNeeded = (subject: string, index: number) => {
         const ques = questions[subject]?.[index];
         if (!ques || ques.status !== undefined) return;

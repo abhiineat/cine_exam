@@ -22,7 +22,9 @@ export const useSocketStore = create<SocketState>((set, get) => ({
             if (!response.ok) throw new Error("Failed to fetch token");
             const { token } = await response.json();
 
-            const ws = new WebSocket(`ws://localhost:8080/cine?token=${token}`);
+            const ws = new WebSocket(
+                `wss://apicine.rishirajsingh.in/app/cine?token=${token}`
+            );
 
             ws.onopen = () => {
                 console.log("🔌 WebSocket connected");

@@ -58,17 +58,11 @@ export default function QuestionNavigator({
     <div className="flex flex-wrap gap-3 items-center py-4 px-2">
       {questionList.map((question, i) => {
         const isActive = activeQuestion === i + 1;
+        let bgColor = "text-gray-300 border border-gray-500";
 
-        // Determine background based on status
-        let bgColor = "text-gray-300 border border-gray-500"; // default
-
-        console.log("Question status:", question.status, "Active:", isActive, "Index:", i+1);
-
-        console.log(typeof question.status, question.status);
         if (!isActive) {
           switch (Number(question.status)) {
               case 0:
-                  console.log("Question is not answered:", question._id);
                   bgColor = "bg-red-600 text-white border border-red-500";
                   break;
               case 1:

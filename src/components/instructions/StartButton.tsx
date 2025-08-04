@@ -15,28 +15,30 @@ export default function StartButton({ selectedLanguage }: StartButtonProps) {
   const router = useRouter();
 
   const handleStart = async () => {
-    setLoading(true);
+      setLoading(true);
 
-    try {
-      const res = await fetch("/api/set-preference", {
-        method: "POST",
-        body: JSON.stringify({ preference: Number(selectedLanguage) }),
-        headers: { "Content-Type": "application/json" },
-      });
+      try {
+          const res = await fetch("/api/set-preference", {
+              method: "POST",
+              body: JSON.stringify({ preference: Number(selectedLanguage) }),
+              headers: { "Content-Type": "application/json" },
+          });
 
-      if (!res.ok) throw new Error("Failed to update preference");
+          if (!res.ok) throw new Error("Failed to update preference");
 
+          // Wait for 1 second
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          console.log("Preference updated successfully");
 
+          await update();
 
-      await update();
-
-      router.push("/e/exam");
-    } catch (error) {
-      console.error("Error setting preference:", error);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+          router.push("/e/exam");
+      } catch (error) {
+          console.error("Error setting preference:", error);
+          alert("Something went wrong. Please try again.");
+      } finally {
+          setLoading(false);
+      }
   };
 
   const isButtonEnabled =

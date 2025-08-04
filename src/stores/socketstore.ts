@@ -6,6 +6,8 @@ type SocketState = {
     closeSocket: () => void;
 };
 
+const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL!;
+
 export const useSocketStore = create<SocketState>((set, get) => ({
     socket: null,
 
@@ -23,7 +25,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
             const { token } = await response.json();
 
             const ws = new WebSocket(
-                `wss://apicine.rishirajsingh.in/app/cine?token=${token}`
+                `${websocketUrl}/cine?token=${token}`
             );
 
             ws.onopen = () => {

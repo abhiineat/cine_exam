@@ -47,6 +47,7 @@ const getStatusCounts = (questionsBySubject: Record<string, Question[]>) => {
 
 export default function Submit() {
   const { questions } = useExamStore();
+  console.log(questions);
   const subjects = Object.keys(questions);
   const statusCounts = getStatusCounts(questions);
   const { update } = useSession();
@@ -101,8 +102,9 @@ export default function Submit() {
               </h2>
               <div className="grid grid-cols-8 sm:grid-cols-10 gap-1.5">
                 {questions[sub].map((q, idx) => {
-                  const status = q?.status;
-                  const ansId = q?.ansId;
+                  const status =
+                      q?.status != null ? Number(q.status) : undefined;
+                  const ansId = q?.ansId != null ? Number(q.ansId) : undefined;
 
                   let bg = "bg-gray-700";
 
@@ -191,24 +193,34 @@ export default function Submit() {
             </table>
           </div>
 
-          <button
-            className={`mt-8 w-full py-3 rounded-full font-semibold text-white transition-all text-lg cursor-pointer flex items-center justify-center gap-2 ${
+            <div className="mt-8 w-full flex gap-3">
+            <button
+              className="py-3 px-6 rounded-full font-semibold text-white bg-gray-700 hover:bg-gray-800 transition-all text-lg cursor-pointer flex items-center justify-center"
+              onClick={() => router.push("/e/exam")}
+              disabled={loading}
+              type="button"
+            >
+              Back to Exam
+            </button>
+            <button
+              className={`flex-1 py-3 rounded-full font-semibold text-white transition-all text-lg cursor-pointer flex items-center justify-center gap-2 ${
               loading
                 ? "bg-emerald-400 cursor-not-allowed"
                 : "bg-emerald-600 hover:bg-emerald-700"
-            }`}
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? (
+              }`}
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
                 Submitting...
               </>
-            ) : (
+              ) : (
               "Submit Test"
-            )}
-          </button>
+              )}
+            </button>
+            </div>
         </div>
       </div>
     </section>

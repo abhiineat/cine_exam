@@ -17,6 +17,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isERoute = pathname.startsWith("/e");
 
+  console.log(pathname);
   const allowedPaths = [
     "/e/instructions",
     "/e/exam",
@@ -55,6 +56,7 @@ export async function middleware(req: NextRequest) {
       !isExamCompleted &&
       !pathname.startsWith("/e/exam")
     ) {
+      console.log("what's happening here");
       return NextResponse.redirect(new URL("/e/exam", req.url));
     }
 

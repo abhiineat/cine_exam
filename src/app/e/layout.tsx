@@ -9,6 +9,23 @@ import ScreenTooSmall from "@/components/error/FullScreen";
 
 const MAX_TAB_SWITCHES = 8;
 
+interface FullscreenDocument extends Document {
+    webkitFullscreenElement?: Element;
+    mozFullScreenElement?: Element;
+    msFullscreenElement?: Element;
+
+    webkitExitFullscreen?: () => Promise<void>;
+    mozCancelFullScreen?: () => Promise<void>;
+    msExitFullscreen?: () => Promise<void>;
+}
+
+interface FullscreenElement extends HTMLElement {
+    webkitRequestFullscreen?: () => Promise<void>;
+    mozRequestFullScreen?: () => Promise<void>;
+    msRequestFullscreen?: () => Promise<void>;
+}
+
+
 export default function ExamLayout({
     children,
 }: {
@@ -27,14 +44,16 @@ export default function ExamLayout({
 
     useEffect(() => {
         const checkFullscreen = () => {
+            const doc = document as FullscreenDocument;
             const fullscreen =
-                document.fullscreenElement ||
-                (document as any).webkitFullscreenElement ||
-                (document as any).mozFullScreenElement ||
-                (document as any).msFullscreenElement;
+                doc.fullscreenElement ||
+                doc.webkitFullscreenElement ||
+                doc.mozFullScreenElement ||
+                doc.msFullscreenElement;
 
             setIsFullscreen(!!fullscreen);
         };
+
 
         const checkScreenSize = () => {
             setIsScreenTooSmall(window.innerWidth < 1024);
@@ -150,15 +169,19 @@ export default function ExamLayout({
     }, [socket]);
 
     const handleEnterFullscreen = () => {
-        const el = document.documentElement;
-        if (el.requestFullscreen) el.requestFullscreen();
-        else if ((el as any).webkitRequestFullscreen)
-            (el as any).webkitRequestFullscreen();
-        else if ((el as any).mozRequestFullScreen)
-            (el as any).mozRequestFullScreen();
-        else if ((el as any).msRequestFullscreen)
-            (el as any).msRequestFullscreen();
+        const el = document.documentElement as FullscreenElement;
+
+        if (el.requestFullscreen) {
+            el.requestFullscreen();
+        } else if (el.webkitRequestFullscreen) {
+            el.webkitRequestFullscreen();
+        } else if (el.mozRequestFullScreen) {
+            el.mozRequestFullScreen();
+        } else if (el.msRequestFullscreen) {
+            el.msRequestFullscreen();
+        }
     };
+
 
     if (isScreenTooSmall) {
         return <ScreenTooSmall />;

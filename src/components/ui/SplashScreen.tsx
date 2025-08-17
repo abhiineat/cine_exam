@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import BackgroundGridPattern from "@/components/ui/BackgroundGridPattern";
+import Image from "next/image";
 
 export default function SplashScreen({
     title = "Loading...",
@@ -25,7 +26,7 @@ export default function SplashScreen({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
-                    <img
+                    <Image
                         src="/icons/csi_logo.svg"
                         alt="CSI Logo"
                         className="w-20 h-20"

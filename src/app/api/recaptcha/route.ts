@@ -15,6 +15,5 @@ export async function POST(request: Request) {
             { status: 403 }
         );
     }
-
     return NextResponse.json({ success: true, score: data.score });
 }

@@ -45,6 +45,24 @@ export default function Login() {
         }, 50);
 
         try {
+            const token = await getToken();
+            if (!token) {
+                toast.error("Something went wrong. Please try again.");
+                setLoading(false);
+                return;
+            }
+
+            const captchaRes = await fetch("/api/recaptcha", {
+                method: "POST",
+                body: JSON.stringify({ token }),
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (!captchaRes.ok) {
+                toast.error("Captcha verification failed. Please try again.");
+                setLoading(false);
+                return;
+            }
             const res = await fetch("/api/candidate/mock", {
                 method: "POST",
             });

@@ -146,7 +146,6 @@ export default function Login() {
                             width={120}
                             height={120}
                             priority
-                            style={{ width: "auto", height: "auto" }}
                         />
                         <h1 className="text-2xl font-semibold text-white mt-4">
                             CINE&apos;24{" "}

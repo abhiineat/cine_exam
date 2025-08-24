@@ -52,24 +52,17 @@ export default function Login() {
                 return;
             }
 
-            const captchaRes = await fetch("/api/recaptcha", {
+            const res = await fetch("/api/candidate/mock", {
                 method: "POST",
                 body: JSON.stringify({ token }),
                 headers: { "Content-Type": "application/json" },
             });
 
-            if (!captchaRes.ok) {
-                toast.error("Captcha verification failed. Please try again.");
+            if (!res.ok) {
+                toast.error("Failed. Please try again.");
                 setLoading(false);
                 return;
             }
-            const res = await fetch("/api/candidate/mock", {
-                method: "POST",
-            });
-
-            clearInterval(scrambleInterval);
-
-            if (!res.ok) throw new Error("Failed to fetch");
 
             const data = await res.json();
 

@@ -84,12 +84,12 @@ export default function ExamLayout({
 
         const handleKeyDown = (e: KeyboardEvent) => {
             // Block Meta, Ctrl, Alt entirely
-            if (e.metaKey || e.ctrlKey || e.altKey) {
-                e.preventDefault();
-                e.stopPropagation();
-                toast.error("Modifier keys are disabled during the exam.");
-                return;
-            }
+            // if (e.metaKey || e.ctrlKey || e.altKey) {
+            //     e.preventDefault();
+            //     e.stopPropagation();
+            //     toast.error("Modifier keys are disabled during the exam.");
+            //     return;
+            // }
 
             // Block Backspace navigation (but allow in inputs/textareas)
             if (

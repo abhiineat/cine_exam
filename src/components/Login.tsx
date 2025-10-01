@@ -113,16 +113,15 @@ export default function Login() {
                 setLoading(false);
                 return;
             }
-
+            toast.success("reCAPTCHA verified!");
             const res = await signIn("credentials", {
                 redirect: false,
                 studentNumber,
                 password,
             });
-            console.log("Login successful, redirecting...");
+            
             if (res?.ok) {
-                toast.success("🎉 Login successful!");
-                console.log("Redirecting to instructions...");
+                toast.success("🎉 Login successful!")
                 router.push("/e/instructions");
             } else {
                 toast.error("Login failed. Please try again.");

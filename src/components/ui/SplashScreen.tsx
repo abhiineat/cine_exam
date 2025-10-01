@@ -27,8 +27,8 @@ export default function SplashScreen({
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
                     <Image
-                        width={20}
-                        height={20}
+                        width={50}
+                        height={50}
                         src="/icons/csi_logo.svg"
                         alt="CSI Logo"
                     />

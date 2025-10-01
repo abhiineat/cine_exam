@@ -119,10 +119,10 @@ export default function Login() {
                 studentNumber,
                 password,
             });
-
+            console.log("Login successful, redirecting...");
             if (res?.ok) {
                 toast.success("🎉 Login successful!");
-                console.log("Login successful, redirecting...");
+                console.log("Redirecting to instructions...");
                 router.push("/e/instructions");
             } else {
                 toast.error("Login failed. Please try again.");

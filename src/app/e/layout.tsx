@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { signOut } from "next-auth/react";
 import ScreenTooSmall from "@/components/error/FullScreen";
 
-const MAX_TAB_SWITCHES = 8;
+const MAX_TAB_SWITCHES = 4;
 
 interface FullscreenDocument extends Document {
     webkitFullscreenElement?: Element;

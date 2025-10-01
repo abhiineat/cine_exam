@@ -121,7 +121,7 @@ export default function Login() {
             });
             
             if (res?.ok) {
-                toast.success("🎉 Login successful!")
+                toast.success("🎉 teri maa!")
                 router.push("/e/instructions");
             } else {
                 toast.error("Login failed. Please try again.");

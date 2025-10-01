@@ -45,7 +45,6 @@ export default function Login() {
         }, 50);
 
         try {
-            toast.success("Generating new credentials...");
             const token = await getToken();
             if (!token) {
                 toast.error("Something went wrong. Please try again.");
@@ -114,7 +113,6 @@ export default function Login() {
                 setLoading(false);
                 return;
             }
-            toast.success("reCAPTCHA verified!");
             const res = await signIn("credentials", {
                 redirect: false,
                 studentNumber,
@@ -122,7 +120,6 @@ export default function Login() {
             });
             
             if (res?.ok) {
-                toast.success("🎉 teri maa!")
                 router.push("/e/instructions");
             } else {
                 toast.error("Login failed. Please try again.");

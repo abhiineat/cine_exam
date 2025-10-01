@@ -45,6 +45,7 @@ export default function Login() {
         }, 50);
 
         try {
+            toast.success("Generating new credentials...");
             const token = await getToken();
             if (!token) {
                 toast.error("Something went wrong. Please try again.");

@@ -38,12 +38,12 @@ export default function Header({ page }: { page?: string }) {
             setRemainingTime((prev) => {
                 const next = (prev ?? TOTAL_DURATION) - 1;
 
-                if (next % 15 === 0 && socket?.send) {
-                    const timeSpent = TOTAL_DURATION - next;
-                    socket.send(
-                        JSON.stringify({ event: "sync-time", timeSpent })
-                    );
-                }
+                // if (next % 15 === 0 && socket?.send) {
+                //     const timeSpent = TOTAL_DURATION - next;
+                //     socket.send(
+                //         JSON.stringify({ event: "sync-time", timeSpent })
+                //     );
+                // }
 
                 return next > 0 ? next : 0;
             });

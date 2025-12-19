@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { ICandidate } from "@/types/model.interfaces";
 
 const candidateSchema = new mongoose.Schema<ICandidate>(

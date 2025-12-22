@@ -28,6 +28,19 @@ function generatePhone(): string {
 export async function POST(request: Request) {
   console.log("🚀 /api/candidate/mock called");
 
+  /* 🔍 ENV DEBUG — RUNS AT LAMBDA RUNTIME */
+  console.log("🧪 [ENV CHECK]");
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+  console.log(
+    "RECAPTCHA_SECRET_KEY exists:",
+    !!process.env.RECAPTCHA_SECRET_KEY
+  );
+  console.log(
+    "RECAPTCHA_SECRET_KEY length:",
+    process.env.RECAPTCHA_SECRET_KEY?.length ?? 0
+  );
+  console.log("DB_URI exists:", !!process.env.DB_URI);
+
   try {
     /* -------------------- REQUEST -------------------- */
     let body: unknown;
@@ -48,11 +61,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (
-      typeof body !== "object" ||
-      body === null ||
-      !("token" in body)
-    ) {
+    if (typeof body !== "object" || body === null || !("token" in body)) {
       console.warn("⚠️ Captcha token missing in request body");
       return NextResponse.json(
         { success: false, error: "Missing captcha token" },
@@ -62,11 +71,8 @@ export async function POST(request: Request) {
 
     const { token } = body as { token: string };
 
-    /* -------------------- ENV CHECK -------------------- */
+    /* -------------------- CAPTCHA ENV CHECK -------------------- */
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-
-    console.log("🔑 RECAPTCHA_SECRET_KEY exists:", Boolean(secretKey));
-    console.log("🌍 NODE_ENV:", process.env.NODE_ENV);
 
     if (!secretKey) {
       console.error("❌ RECAPTCHA_SECRET_KEY is undefined at runtime");
@@ -98,7 +104,11 @@ export async function POST(request: Request) {
       "error-codes"?: string[];
     } = await captchaRes.json();
 
-    console.log("🤖 Captcha response:", captchaData);
+    console.log("🤖 Captcha response:", {
+      success: captchaData.success,
+      score: captchaData.score,
+      errors: captchaData["error-codes"],
+    });
 
     if (!captchaData.success || (captchaData.score ?? 0) < 0.5) {
       console.warn("❌ Captcha verification failed");
@@ -124,10 +134,7 @@ export async function POST(request: Request) {
     const email = `${studentNumber.toLowerCase()}@example.com`;
     const phone = generatePhone();
 
-    console.log("👤 Creating candidate:", {
-      studentNumber,
-      email,
-    });
+    console.log("👤 Creating candidate:", { studentNumber, email });
 
     /* -------------------- CREATE -------------------- */
     const candidate = await Candidate.create({

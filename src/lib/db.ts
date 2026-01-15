@@ -1,29 +1,33 @@
 import mongoose from "mongoose";
 
-let isConnected = false;
+const MONGODB_URI = process.env.DB_URI!;
+
+if (!MONGODB_URI) {
+  throw new Error("DB_URI is missing");
+}
+
+let cached = (global as any).mongoose;
+
+if (!cached) {
+  cached = (global as any).mongoose = {
+    conn: null,
+    promise: null,
+  };
+}
 
 export async function connectToDB() {
-  if (isConnected || mongoose.connection.readyState >= 1) {
-    return mongoose.connection;
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  const DB_URI = process.env.DB_URI;
-
-  if (!DB_URI) {
-    console.error("❌ DB_URI is missing at runtime");
-    throw new Error("DB_URI environment variable is not defined");
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI);
   }
 
-  try {
-    await mongoose.connect(DB_URI, {
-      bufferCommands: false,
-    });
-
-    isConnected = true;
-    console.log("✅ Connected to MongoDB");
-    return mongoose.connection;
-  } catch (error) {
-    console.error("❌ Error connecting to MongoDB:", error);
-    throw error;
-  }
+  cached.conn = await cached.promise;
+  console.log("🧠 readyState:", mongoose.connection.readyState);
+  console.log("🧠 db name:", mongoose.connection.db?.databaseName);
+  console.log("🧠 host:", mongoose.connection.host);
+  console.log("🟢 MongoDB connected");
+  return cached.conn;
 }
